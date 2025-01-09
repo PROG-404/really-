@@ -93,3 +93,38 @@ local Characters = workspace:WaitForChild("Characters")
 ```lua
 local SeaBeasts = workspace:WaitForChild("SeaBeasts")
 ```
+
+### Access subobjects such as Enemie1 or Enemies2
+
+```lua
+local Enemies = workspace:WaitForChild("Enemies")
+```
+
+### To access subobjects such as Terrain or Tee
+
+```lua
+local Map = workspace:WaitForChild("Map")
+```
+
+### To access subobjects such as SPAWN1 or SPAWN2
+
+```lua
+local EnemySpawns = WorldOrigin:WaitForChild("EnemySpawns")
+```
+
+### To access sub-objects such as Locations1 or Locations2
+
+```lua
+local Locations = WorldOrigin:WaitForChild("Locations")
+```
+### The following code is provided 
+### 1. It runs in every frame before rendering the lines
+### 2. It runs in every frame after a physical update 
+### 3. An object that represents the client and its control
+
+```lua
+local RenderStepped = RunService.RenderStepped
+local Heartbeat = RunService.Heartbeat
+local Stepped = RunService.Stepped
+local Player = Players.LocalPlayer
+```
