@@ -6,8 +6,8 @@ if getgenv().ScriptExecute then return print('Script Already Execute') end
 local start_check_time = tick()
 getgenv().ScriptExecute = true
 repeat task.wait() until game:IsLoaded() and game.Players and game.Players.LocalPlayer  
-if game.CoreGui:FindFirstChild("Mo Mo Be") then
-    game.CoreGui:FindFirstChild("Mo Mo Be"):Destroy()
+if game.CoreGui:FindFirstChild("PORG") then
+    game.CoreGui:FindFirstChild("PORG"):Destroy()
 end  
 spawn(function()
     keyuicheck = tick()
@@ -19,7 +19,7 @@ spawn(function()
                 game.Players.LocalPlayer
             ) 
         end
-    until game.CoreGui:FindFirstChild("Mo Mo Be") 
+    until game.CoreGui:FindFirstChild("PORG") 
 end)
 if islclosure(getgenv().setfenv) then game.Players.LocalPlayer:Kick("MMB 1") while true do end end -- ANTI SETFENV TAMPERING
 if islclosure(getgenv().tostring) then game.Players.LocalPlayer:Kick("MMB 2") while true do end end -- ANTI TOSTRING TAMPERING
@@ -38,7 +38,7 @@ function instance.new(class, properties)
     return inst
 end
 object.TsuoHub = instance.new("ScreenGui", {
-    Name = "Mo Mo Be";
+    Name = "PORG";
     Parent = game.CoreGui;
     ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
 })
@@ -218,7 +218,7 @@ object.Desc = instance.new("TextLabel", {
 
 function RemoveKeyUI() 
     do
-        local keyui = game.CoreGui:FindFirstChild("Mo Mo Be")
+        local keyui = game.CoreGui:FindFirstChild("PORG")
         if keyui then
             keyui:Destroy()
         end 
