@@ -87,3 +87,9 @@ local WorldOrigin = workspace:WaitForChild("_WorldOrigin")
 ```lua
 local Characters = workspace:WaitForChild("Characters")
 ```
+
+### Accessing Seabest 1 or Seabest 2 sub-objects
+
+```lua
+local SeaBeasts = workspace:WaitForChild("SeaBeasts")
+```
