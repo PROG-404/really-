@@ -128,3 +128,14 @@ local Heartbeat = RunService.Heartbeat
 local Stepped = RunService.Stepped
 local Player = Players.LocalPlayer
 ```
+
+### Accessing the software modules inside it, such as models1or models2
+
+```lua
+local Modules = ReplicatedStorage:WaitForChild("Modules")
+```
+
+### Accessing objects inside it, such as networkUtils or RemoteEvents
+```lua
+local Net = Modules:WaitForChild("Net")
+```
