@@ -1,7 +1,7 @@
 ## Library 
 
 ```lua
-here the library 
+local ProtLib = loadstring(game:HttpGet(""))()
 ```
 # Functions that help you build your own script
 
