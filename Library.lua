@@ -1,4 +1,3 @@
--- Part 1: Core Framework
 local Services = setmetatable({
    _cache = {},
 }, {
@@ -89,7 +88,7 @@ local ThemeManager = {
    }
 }
 
--- Part 2: Enhanced Animation System
+-- Enhanced Animation System
 local AnimationSystem = {
     _activeTweens = {},
     _activeEffects = {},
@@ -165,7 +164,7 @@ local AnimationSystem = {
 }
 
 
--- Part 3: Enhanced UI Components
+-- Enhanced UI Components
 local UIComponents = {
     Button = {
         new = function(properties)
@@ -223,7 +222,7 @@ local UIComponents = {
 }
 
 
--- Part 4: Window System
+-- Window System
 local WindowSystem = {
     Window = {
         new = function(properties) 
@@ -297,7 +296,7 @@ local WindowSystem = {
 }
 
 
--- Part 5: Export & Integration
+-- Export & Integration
 local ProgLib = {
     Theme = ThemeManager.Themes.Default.Dark,
     Animation = AnimationSystem,
@@ -317,7 +316,7 @@ local ProgLib = {
 return ProgLib
 
 
--- Part 6: Advanced Components
+-- Advanced Components
 local AdvancedComponents = {
    Dropdown = {
        new = function(properties)
