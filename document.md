@@ -3,6 +3,135 @@
 ```lua
 local ProtLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/PROG-404/really-/refs/heads/main/Library.lua"))()
 ```
+# Theme
+```lua
+ProgLib:setTheme("Dark")
+```
+# Add window 
+
+```lua
+local mainWindow = ProgLib.UI.Window.new({
+    Title = "Window Prog",
+    Size = UDim2.new(0, 600, 0, 400),
+    Position = UDim2.new(0.5, -300, 0.5, -200)
+})
+```
+# Home button
+```lua
+local mainButton = ProgLib.UI.Components.Button.new({
+    Text = "Button",
+    Size = UDim2.new(0, 200, 0, 40),
+    Position = UDim2.new(0.5, -100, 0.2, 0),
+    OnClick = function()
+```
+
+# 
+```lua
+        ProgLib.UI.Notification.notify({
+            Title = "Title",
+            Message = "Masge",
+            Duration = 3
+        })
+    end,
+    Parent = mainWindow
+})
+```
+
+```lua
+local ProgLib = loadstring(game:HttpGet("Library.lua"))()
+
+-- تعيين السمة الافتراضية
+ProgLib:setTheme("Dark")
+
+-- إنشاء النافذة الرئيسية
+local mainWindow = ProgLib.UI.Window.new({
+    Title = "واجهة المستخدم الخاصة بي",
+    Size = UDim2.new(0, 600, 0, 400),
+    Position = UDim2.new(0.5, -300, 0.5, -200)
+})
+
+-- إضافة زر رئيسي
+local mainButton = ProgLib.UI.Components.Button.new({
+    Text = "زر رئيسي",
+    Size = UDim2.new(0, 200, 0, 40),
+    Position = UDim2.new(0.5, -100, 0.2, 0),
+    OnClick = function()
+        -- إنشاء تأثير النقر
+        ProgLib.Animation.Effects.Ripple(mainButton, {
+            Position = UDim2.new(0.5, 0, 0.5, 0)
+        })
+        
+        -- إظهار إشعار
+        ProgLib.UI.Notification.notify({
+            Title = "تم النقر!",
+            Message = "لقد ضغطت على الزر الرئيسي",
+            Duration = 3
+        })
+    end,
+    Parent = mainWindow
+})
+
+
+local slider = ProgLib.UI.Components.Slider.new({
+    Title = "شريط التمرير",
+    Min = 0,
+    Max = 100,
+    Default = 50,
+    Size = UDim2.new(0, 200, 0, 50),
+    Position = UDim2.new(0.5, -100, 0.4, 0),
+    Parent = mainWindow
+})
+
+-- إضافة قائمة منسدلة
+local dropdown = ProgLib.UI.Components.Dropdown.new({
+    Text = "اختر خياراً",
+    Size = UDim2.new(0, 200, 0, 40),
+    Position = UDim2.new(0.5, -100, 0.6, 0),
+    Options = {"الخيار الأول", "الخيار الثاني", "الخيار الثالث"},
+    Default = "الخيار الأول",
+    Parent = mainWindow
+})
+
+-- إضافة زر ثانوي مع تأثيرات متحركة
+local animatedButton = ProgLib.UI.Components.Button.new({
+    Text = "زر متحرك",
+    Size = UDim2.new(0, 200, 0, 40),
+    Position = UDim2.new(0.5, -100, 0.8, 0),
+    OnClick = function()
+        -- إنشاء تأثير النقر
+        ProgLib.Animation.Effects.Ripple(animatedButton, {
+            Position = UDim2.new(0.5, 0, 0.5, 0)
+        })
+        
+        -- تأثير التلاشي
+        ProgLib.Animation.Effects.Fade(animatedButton, {
+            Duration = 0.3,
+            Transparency = 0.5
+        }).Completed:Wait()
+        
+        -- إعادة الظهور
+        ProgLib.Animation.Effects.Fade(animatedButton, {
+            Duration = 0.3,
+            Transparency = 0
+        })
+    end,
+    Parent = mainWindow
+})
+
+-- إضافة تأثيرات الحركة للنافذة
+ProgLib.Animation.Effects.Scale(mainWindow, {
+    Duration = 0.5
+})
+
+-- معالجة تنظيف الواجهة عند إغلاق اللعبة
+game:GetService("Players").PlayerRemoving:Connect(function(player)
+    if player == game:GetService("Players").LocalPlayer then
+        ProgLib.UI.InstanceManager.cleanup()
+    end
+end)
+```
+
+
 # Functions that help you build your own script
 
 ### Simulating clicking or pressing buttons
