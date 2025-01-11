@@ -1320,3 +1320,440 @@ local WindowManager = {
        return window
    end
 }
+
+
+-- الجزء 26: نظام الأمان المتقدم
+local SecuritySystem = {
+    _encryptionKey = nil,
+    
+    initialize = function(self, key)
+        self._encryptionKey = key
+    end,
+    
+    encrypt = function(self, data)
+        if not self._encryptionKey then return data end
+        -- تنفيذ التشفير
+        return data 
+    end,
+    
+    decrypt = function(self, data)
+        if not self._encryptionKey then return data end
+        -- تنفيذ فك التشفير
+        return data
+    end
+}
+
+-- الجزء 27: نظام التخزين المتقدم 
+local StorageSystem = {
+    _cache = {},
+    
+    save = function(self, key, value)
+        self._cache[key] = value
+        -- حفظ في التخزين المحلي
+    end,
+    
+    load = function(self, key)
+        return self._cache[key]
+    end,
+    
+    clear = function(self)
+        table.clear(self._cache)
+    end
+}
+
+-- الجزء 28: نظام التحكم بالصوت
+local AudioSystem = {
+    _sounds = {},
+    
+    playSound = function(self, id, properties)
+        local sound = Instance.new("Sound")
+        sound.SoundId = id
+        sound.Volume = properties.Volume or 1
+        sound.Parent = game.Workspace
+        sound:Play()
+        
+        table.insert(self._sounds, sound)
+        return sound
+    end,
+    
+    stopAll = function(self)
+        for _, sound in ipairs(self._sounds) do
+            sound:Stop()
+            sound:Destroy()
+        end
+        table.clear(self._sounds)
+    end
+}
+
+-- الجزء 29: نظام الحركة المتقدم
+local AdvancedMotion = {
+    createPath = function(points)
+        local path = {}
+        for i = 1, #points do
+            path[i] = points[i]
+        end
+        return path
+    end,
+    
+    followPath = function(instance, path, speed)
+        for i = 1, #path do
+            local point = path[i]
+            local tween = game:GetService("TweenService"):Create(
+                instance,
+                TweenInfo.new(speed),
+                {Position = point}
+            )
+            tween:Play()
+            tween.Completed:Wait()
+        end
+    end
+}
+
+-- الجزء 30: نظام التأثيرات البصرية
+local VisualEffects = {
+    createParticles = function(parent, properties)
+        local emitter = Instance.new("ParticleEmitter")
+        emitter.Rate = properties.Rate or 50
+        emitter.Speed = NumberRange.new(properties.Speed or 5)
+        emitter.Color = properties.Color or ColorSequence.new(Color3.new(1, 1, 1))
+        emitter.Parent = parent
+        return emitter
+    end,
+    
+    createTrail = function(parent, properties)
+        local trail = Instance.new("Trail")
+        trail.Color = properties.Color or ColorSequence.new(Color3.new(1, 1, 1))
+        trail.Transparency = properties.Transparency or NumberSequence.new(0)
+        trail.Parent = parent
+        return trail
+    end
+}
+
+-- الجزء 31: نظام التحكم بالكاميرا المتقدم
+local CameraSystem = {
+   _camera = workspace.CurrentCamera,
+   
+   setPosition = function(self, position)
+       self._camera.CFrame = CFrame.new(position)
+   end,
+   
+   follow = function(self, target, offset)
+       game:GetService("RunService").RenderStepped:Connect(function()
+           if target then
+               self._camera.CFrame = CFrame.new(target.Position + offset)
+           end
+       end)
+   end,
+   
+   shake = function(self, duration, intensity)
+       local startTime = tick()
+       local connection
+       
+       connection = game:GetService("RunService").RenderStepped:Connect(function()
+           local elapsed = tick() - startTime
+           if elapsed >= duration then
+               connection:Disconnect()
+               return
+           end
+           
+           local randomOffset = Vector3.new(
+               math.random(-intensity, intensity),
+               math.random(-intensity, intensity),
+               math.random(-intensity, intensity)
+           )
+           
+           self._camera.CFrame = self._camera.CFrame * CFrame.new(randomOffset)
+       end)
+   end
+}
+
+-- الجزء 32: نظام الأحداث المتقدم
+local EventSystem = {
+   _events = {},
+   
+   create = function(self, name)
+       self._events[name] = {
+           callbacks = {},
+           
+           connect = function(self, callback)
+               table.insert(self.callbacks, callback)
+               
+               return {
+                   disconnect = function()
+                       local index = table.find(self.callbacks, callback)
+                       if index then
+                           table.remove(self.callbacks, index)
+                       end
+                   end
+               }
+           end
+       }
+       
+       return self._events[name]  
+   end,
+   
+   fire = function(self, name, ...)
+       local event = self._events[name]
+       if event then
+           for _, callback in ipairs(event.callbacks) do
+               callback(...)
+           end
+       end
+   end
+}
+
+-- الجزء 33: نظام التحكم بالشبكة
+local NetworkSystem = {
+   _remotes = {},
+   
+   createRemote = function(self, name, remoteType)
+       local remote
+       if remoteType == "Event" then
+           remote = Instance.new("RemoteEvent")
+       elseif remoteType == "Function" then  
+           remote = Instance.new("RemoteFunction")
+       end
+       
+       remote.Name = name
+       remote.Parent = game:GetService("ReplicatedStorage")
+       self._remotes[name] = remote
+       
+       return remote
+   end,
+   
+   fireServer = function(self, name, ...)
+       local remote = self._remotes[name]
+       if remote and remote:IsA("RemoteEvent") then
+           remote:FireServer(...)
+       end
+   end,
+   
+   fireClient = function(self, name, player, ...)
+       local remote = self._remotes[name]
+       if remote and remote:IsA("RemoteEvent") then
+           remote:FireClient(player, ...)
+       end
+   end
+}
+
+-- الجزء 34: نظام الحماية من التلاعب
+local AntiExploitSystem = {
+   _checks = {},
+   
+   addCheck = function(self, name, checkFunction)
+       self._checks[name] = checkFunction
+   end,
+   
+   runChecks = function(self)
+       for name, check in pairs(self._checks) do
+           local success, result = pcall(check)
+           if not success or result == false then
+               -- تنفيذ إجراء عند اكتشاف تلاعب
+               print("Exploit detected:", name)
+           end
+       end
+   end
+}
+
+-- الجزء 35: نظام التحكم بالأداء
+local PerformanceOptimizer = {
+   _monitoring = false,
+   _threshold = 30, -- FPS
+   
+   startMonitoring = function(self)
+       self._monitoring = true
+       
+       game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+           if not self._monitoring then return end
+           
+           local fps = 1/deltaTime
+           if fps < self._threshold then
+               self:optimize()
+           end
+       end)
+   end,
+   
+   optimize = function(self)
+       -- تحسين الأداء تلقائياً
+       workspace.StreamingEnabled = true
+       settings().Rendering.QualityLevel = 1
+   end,
+   
+   setThreshold = function(self, fps)
+       self._threshold = fps
+   end
+}
+
+-- الجزء 36: نظام الواجهات المتقدم
+local AdvancedUI = {
+   createResponsiveFrame = function(properties)
+       local frame = Instance.new("Frame")
+       frame.Size = properties.Size or UDim2.new(1, 0, 1, 0)
+       frame.BackgroundColor3 = properties.Color or Color3.new(1, 1, 1)
+       
+       -- جعل الإطار متجاوب
+       local uiAspect = Instance.new("UIAspectRatioConstraint")
+       uiAspect.Parent = frame
+       
+       -- إضافة حدود متحركة
+       local uiStroke = Instance.new("UIStroke")
+       uiStroke.Color = properties.StrokeColor or Color3.new(0, 0, 0)
+       uiStroke.Thickness = properties.StrokeThickness or 2
+       uiStroke.Parent = frame
+       
+       return frame
+   end,
+   
+   createAnimatedButton = function(properties)
+       local button = Instance.new("TextButton")
+       button.Size = properties.Size or UDim2.new(0, 200, 0, 50)
+       button.BackgroundColor3 = properties.Color or Color3.new(0, 0.5, 1)
+       button.Text = properties.Text or "Button"
+       
+       -- إضافة تأثيرات التحويم
+       button.MouseEnter:Connect(function()
+           game:GetService("TweenService"):Create(
+               button,
+               TweenInfo.new(0.3),
+               {BackgroundColor3 = properties.HoverColor or Color3.new(0, 0.7, 1)}
+           ):Play()
+       end)
+       
+       button.MouseLeave:Connect(function()
+           game:GetService("TweenService"):Create(
+               button,
+               TweenInfo.new(0.3),
+               {BackgroundColor3 = properties.Color or Color3.new(0, 0.5, 1)}
+           ):Play()
+       end)
+       
+       return button
+   end
+}
+
+
+-- الجزء 37: نظام الخرائط الديناميكية
+local DynamicMapSystem = {
+    _chunks = {},
+    _chunkSize = 32,
+    
+    generateChunk = function(self, x, z)
+        local chunk = Instance.new("Model")
+        chunk.Name = string.format("Chunk_%d_%d", x, z)
+        
+        -- توليد التضاريس
+        for dx = 0, self._chunkSize-1 do
+            for dz = 0, self._chunkSize-1 do
+                local worldX = x * self._chunkSize + dx
+                local worldZ = z * self._chunkSize + dz
+                
+                local height = math.noise(worldX * 0.1, worldZ * 0.1) * 10
+                
+                local part = Instance.new("Part")
+                part.Size = Vector3.new(1, 1, 1)
+                part.Position = Vector3.new(worldX, height, worldZ)
+                part.Parent = chunk
+            end
+        end
+        
+        self._chunks[string.format("%d_%d", x, z)] = chunk
+        chunk.Parent = workspace
+        
+        return chunk
+    end,
+    
+    loadChunksAround = function(self, position)
+        local chunkX = math.floor(position.X / self._chunkSize)
+        local chunkZ = math.floor(position.Z / self._chunkSize)
+        
+        for dx = -1, 1 do
+            for dz = -1, 1 do
+                local x = chunkX + dx
+                local z = chunkZ + dz
+                
+                if not self._chunks[string.format("%d_%d", x, z)] then
+                    self:generateChunk(x, z)
+                end
+            end
+        end
+    end
+}
+
+-- الجزء 38: نظام الظل المتقدم
+local AdvancedShadowSystem = {
+    createShadowLight = function(position, properties)
+        local light = Instance.new("SpotLight")
+        light.Position = position
+        light.Range = properties.Range or 50
+        light.Brightness = properties.Brightness or 2
+        light.Shadows = true
+        
+        -- إضافة تأثيرات حركة الظل
+        game:GetService("RunService").RenderStepped:Connect(function()
+            light.Position = light.Position + Vector3.new(
+                math.sin(tick()) * 0.1,
+                0,
+                math.cos(tick()) * 0.1
+            )
+        end)
+        
+        return light
+    end,
+    
+    createVolumetricLight = function(position, properties)
+        local light = Instance.new("PointLight")
+        light.Position = position
+        light.Range = properties.Range or 30
+        light.Brightness = properties.Brightness or 3
+        
+        -- إضافة تأثير الضوء الحجمي
+        local attachment = Instance.new("Attachment")
+        attachment.Parent = light
+        
+        local beam = Instance.new("Beam")
+        beam.Attachment0 = attachment
+        beam.Width0 = properties.Width or 2
+        beam.Width1 = 0
+        beam.FaceCamera = true
+        
+        return light
+    end
+}
+
+-- الجزء 39: نظام الفيزياء المتقدم
+local AdvancedPhysics = {
+    _constraints = {},
+    
+    createRope = function(startPos, endPos, properties)
+        local rope = Instance.new("RopeConstraint")
+        rope.Length = (startPos - endPos).Magnitude
+        rope.Thickness = properties.Thickness or 1
+        
+        local attachment0 = Instance.new("Attachment")
+        attachment0.Position = startPos
+        
+        local attachment1 = Instance.new("Attachment")
+        attachment1.Position = endPos
+        
+        rope.Attachment0 = attachment0
+        rope.Attachment1 = attachment1
+        
+        table.insert(self._constraints, rope)
+        return rope
+    end,
+    
+    createHinge = function(part0, part1, properties)
+        local hinge = Instance.new("HingeConstraint")
+        hinge.ActuatorType = Enum.ActuatorType.Motor
+        hinge.AngularSpeed = properties.Speed or 5
+        hinge.AngularResponsiveness = properties.Responsiveness or 10
+        
+        hinge.Part0 = part0
+        hinge.Part1 = part1
+        
+        table.insert(self._constraints, hinge)
+        return hinge
+    end
+}
+
+
