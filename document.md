@@ -37,10 +37,10 @@ local mainButton = ProgLib.UI.Components.Button.new({
     Parent = mainWindow
 })
 ```
-# Slidr 
+# Slider 
 ```lua
 local slider = ProgLib.UI.Components.Slider.new({
-    Title = "شريط التمرير",
+    Title = "Slider",
     Min = 0,
     Max = 100,
     Default = 50,
