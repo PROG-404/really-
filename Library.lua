@@ -1756,3 +1756,289 @@ local AdvancedPhysics = {
 }
 
 
+-- الجزء 36: نظام الشبكات المتقدم
+local NetworkSystem = {
+   _connections = {},
+   _events = {},
+   
+   createConnection = function(name, callback)
+       NetworkSystem._connections[name] = callback
+   end,
+   
+   fireEvent = function(name, ...)
+       if NetworkSystem._connections[name] then
+           NetworkSystem._connections[name](...)
+       end
+   end,
+   
+   broadcast = function(eventName, data)
+       table.insert(NetworkSystem._events, {
+           name = eventName,
+           data = data,
+           timestamp = os.time()
+       })
+   end
+}
+
+-- الجزء 37: نظام التحكم بالكاميرا المتقدم
+local CameraSystem = {
+   _camera = workspace.CurrentCamera,
+   
+   setPosition = function(position)
+       CameraSystem._camera.CFrame = CFrame.new(position)
+   end,
+   
+   lookAt = function(target)
+       CameraSystem._camera.CFrame = CFrame.new(CameraSystem._camera.CFrame.Position, target)
+   end,
+   
+   shake = function(intensity, duration)
+       local startTime = os.clock()
+       local connection
+       
+       connection = game:GetService("RunService").RenderStepped:Connect(function()
+           local elapsed = os.clock() - startTime
+           if elapsed >= duration then
+               connection:Disconnect()
+               return
+           end
+           
+           local offset = Vector3.new(
+               math.random(-intensity, intensity),
+               math.random(-intensity, intensity),
+               math.random(-intensity, intensity)
+           )
+           
+           CameraSystem._camera.CFrame = CameraSystem._camera.CFrame * CFrame.new(offset)
+       end)
+   end
+}
+
+-- الجزء 38: نظام الأحداث المتقدم
+local EventSystem = {
+   _events = {},
+   
+   on = function(eventName, callback)
+       if not EventSystem._events[eventName] then
+           EventSystem._events[eventName] = {}
+       end
+       table.insert(EventSystem._events[eventName], callback)
+   end,
+   
+   emit = function(eventName, ...)
+       if EventSystem._events[eventName] then
+           for _, callback in ipairs(EventSystem._events[eventName]) do
+               callback(...)
+           end
+       end
+   end,
+   
+   clear = function(eventName)
+       EventSystem._events[eventName] = nil
+   end
+}
+
+-- الجزء 39: نظام التحكم بالوقت
+local TimeSystem = {
+   _time = 0,
+   _scale = 1,
+   _callbacks = {},
+   
+   update = function(dt)
+       TimeSystem._time = TimeSystem._time + dt * TimeSystem._scale
+       
+       for time, callbacks in pairs(TimeSystem._callbacks) do
+           if TimeSystem._time >= time then
+               for _, callback in ipairs(callbacks) do
+                   callback()
+               end
+               TimeSystem._callbacks[time] = nil
+           end
+       end
+   end,
+   
+   setTimeScale = function(scale)
+       TimeSystem._scale = scale
+   end,
+   
+   after = function(delay, callback)
+       local targetTime = TimeSystem._time + delay
+       if not TimeSystem._callbacks[targetTime] then
+           TimeSystem._callbacks[targetTime] = {}
+       end
+       table.insert(TimeSystem._callbacks[targetTime], callback)
+   end
+}
+
+-- الجزء 40: نظام الجسيمات المتقدم
+local ParticleSystem = {
+   _emitters = {},
+   
+   createEmitter = function(properties)
+       local emitter = Instance.new("ParticleEmitter")
+       emitter.Rate = properties.Rate or 50
+       emitter.Lifetime = properties.Lifetime or NumberRange.new(1)
+       emitter.Speed = properties.Speed or NumberRange.new(5)
+       emitter.SpreadAngle = properties.SpreadAngle or Vector2.new(0, 360)
+       emitter.Color = properties.Color or ColorSequence.new(Color3.new(1, 1, 1))
+       
+       table.insert(ParticleSystem._emitters, emitter)
+       return emitter
+   end,
+   
+   burst = function(emitter, amount)
+       emitter:Emit(amount)
+   end,
+   
+   stopAll = function()
+       for _, emitter in ipairs(ParticleSystem._emitters) do
+           emitter.Enabled = false
+       end
+   end
+}
+
+-- الجزء 41: نظام التحكم بالأداء المتقدم
+local PerformanceController = {
+   _monitoring = false,
+   _metrics = {},
+   
+   startMonitoring = function()
+       local connection = game:GetService("RunService").Heartbeat:Connect(function(dt)
+           table.insert(PerformanceController._metrics, {
+               frameTime = dt,
+               timestamp = os.clock()
+           })
+       end)
+       return connection
+   end,
+   
+   analyzePerformance = function()
+       local totalFrameTime = 0
+       for _, metric in ipairs(PerformanceController._metrics) do
+           totalFrameTime = totalFrameTime + metric.frameTime
+       end
+       return totalFrameTime / #PerformanceController._metrics
+   end
+}
+
+-- الجزء 42: نظام التحكم بالمواد المتقدم
+local MaterialSystem = {
+   createMaterial = function(properties)
+       local material = {
+           color = properties.Color or Color3.new(1, 1, 1),
+           transparency = properties.Transparency or 0,
+           reflectance = properties.Reflectance or 0,
+           texture = properties.Texture
+       }
+       return material
+   end,
+   
+   applyMaterial = function(part, material)
+       part.Color = material.color
+       part.Transparency = material.transparency
+       part.Reflectance = material.reflectance
+       if material.texture then
+           local texture = Instance.new("Texture")
+           texture.Texture = material.texture
+           texture.Parent = part
+       end
+   end
+}
+
+-- الجزء 43: نظام المؤثرات البصرية المتقدم
+local VisualFXSystem = {
+   createBlur = function(parent, properties)
+       local blur = Instance.new("BlurEffect")
+       blur.Size = properties.Size or 10
+       blur.Parent = parent
+       return blur
+   end,
+   
+   createBloom = function(parent, properties)
+       local bloom = Instance.new("BloomEffect")
+       bloom.Intensity = properties.Intensity or 1
+       bloom.Size = properties.Size or 24
+       bloom.Threshold = properties.Threshold or 2
+       bloom.Parent = parent
+       return bloom
+   end,
+   
+   createSunRays = function(parent, properties)
+       local sunRays = Instance.new("SunRaysEffect")
+       sunRays.Intensity = properties.Intensity or 0.25
+       sunRays.Spread = properties.Spread or 1
+       sunRays.Parent = parent
+       return sunRays
+   end
+}
+
+-- الجزء 44: نظام التحكم بالصوت المتقدم
+local AdvancedAudioSystem = {
+   _sounds = {},
+   
+   createSound = function(properties)
+       local sound = Instance.new("Sound")
+       sound.SoundId = properties.SoundId
+       sound.Volume = properties.Volume or 1
+       sound.Pitch = properties.Pitch or 1
+       sound.Looped = properties.Looped or false
+       
+       if properties.Effects then
+           for _, effect in ipairs(properties.Effects) do
+               local soundEffect = Instance.new(effect.Type)
+               for property, value in pairs(effect.Properties) do
+                   soundEffect[property] = value
+               end
+               soundEffect.Parent = sound
+           end
+       end
+       
+       table.insert(AdvancedAudioSystem._sounds, sound)
+       return sound
+   end,
+   
+   fadeVolume = function(sound, targetVolume, duration)
+       local tween = game:GetService("TweenService"):Create(
+           sound,
+           TweenInfo.new(duration, Enum.EasingStyle.Linear),
+           {Volume = targetVolume}
+       )
+       tween:Play()
+       return tween
+   end
+}
+
+-- الجزء 45: نظام التحكم بالحركة المتقدم
+local AdvancedMotionSystem = {
+   createMotion = function(instance, properties)
+       local motion = {
+           instance = instance,
+           startPos = instance.Position,
+           endPos = properties.EndPosition,
+           duration = properties.Duration or 1,
+           easingStyle = properties.EasingStyle or Enum.EasingStyle.Linear,
+           easingDirection = properties.EasingDirection or Enum.EasingDirection.Out
+       }
+       
+       return motion
+   end,
+   
+   play = function(motion, onComplete)
+       local tween = game:GetService("TweenService"):Create(
+           motion.instance,
+           TweenInfo.new(
+               motion.duration,
+               motion.easingStyle,
+               motion.easingDirection
+           ),
+           {Position = motion.endPos}
+       )
+       
+       if onComplete then
+           tween.Completed:Connect(onComplete)
+       end
+       
+       tween:Play()
+       return tween
+   end
+}
