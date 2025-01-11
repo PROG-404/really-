@@ -1,4 +1,4 @@
--- Core Framework
+-- Part 1: Core Framework
 local Services = setmetatable({
    _cache = {},
 }, {
@@ -89,7 +89,7 @@ local ThemeManager = {
    }
 }
 
--- Enhanced Animation System
+-- Part 2: Enhanced Animation System
 local AnimationSystem = {
     _activeTweens = {},
     _activeEffects = {},
@@ -164,7 +164,66 @@ local AnimationSystem = {
     }
 }
 
--- Window System
+
+-- Part 3: Enhanced UI Components
+local UIComponents = {
+    Button = {
+        new = function(properties)
+            local theme = ThemeManager.Themes.Default.Dark
+            
+            local button = InstanceManager.create("TextButton", {
+                Size = properties.Size or UDim2.new(1, 0, 0, 40),
+                BackgroundColor3 = theme.Secondary,
+                BorderSizePixel = 0,
+                Text = properties.Text or "Button",
+                TextColor3 = theme.Text,
+                Font = properties.Font or Enum.Font.GothamBold,
+                TextSize = properties.TextSize or 14,
+                AutoButtonColor = false
+            })
+            
+            local corner = InstanceManager.create("UICorner", {
+                CornerRadius = UDim.new(0, 6),
+                Parent = button
+            })
+            
+            local stroke = InstanceManager.create("UIStroke", {
+                Color = theme.Border,
+                Transparency = 0.5,
+                Parent = button
+            })
+            
+            button.MouseEnter:Connect(function()
+                Services.TweenService:Create(button,
+                    TweenInfo.new(0.2),
+                    {BackgroundColor3 = theme.Secondary:Lerp(theme.Accent, 0.1)}
+                ):Play()
+            end)
+            
+            button.MouseLeave:Connect(function()
+                Services.TweenService:Create(button,
+                    TweenInfo.new(0.2),
+                    {BackgroundColor3 = theme.Secondary}
+                ):Play()
+            end)
+            
+            button.MouseButton1Down:Connect(function()
+                AnimationSystem.Effects.Ripple(button, {
+                    Position = UDim2.new(0.5, 0, 0.5, 0)
+                })
+            end)
+            
+            if properties.OnClick then
+                button.MouseButton1Click:Connect(properties.OnClick)
+            end
+            
+            return button
+        end
+    }
+}
+
+
+-- Part 4: Window System
 local WindowSystem = {
     Window = {
         new = function(properties) 
@@ -237,7 +296,8 @@ local WindowSystem = {
     }
 }
 
--- Export & Integration
+
+-- Part 5: Export & Integration
 local ProgLib = {
     Theme = ThemeManager.Themes.Default.Dark,
     Animation = AnimationSystem,
@@ -256,7 +316,8 @@ local ProgLib = {
 
 return ProgLib
 
--- Advanced Components
+
+-- Part 6: Advanced Components
 local AdvancedComponents = {
    Dropdown = {
        new = function(properties)
@@ -385,7 +446,7 @@ local AdvancedComponents = {
    }
 }
 
--- Modal System
+-- Part 7: Modal System
 local ModalSystem = {
     new = function(properties)
         local theme = ThemeManager.Themes.Default.Dark
@@ -439,7 +500,7 @@ local ModalSystem = {
     end
 }
 
--- Notification System
+-- Part 8: Notification System
 local NotificationSystem = {
     _activeNotifications = {},
     
@@ -513,7 +574,7 @@ local NotificationSystem = {
     end
 }
 
--- Contextual Help System
+-- Part 9: Contextual Help System
 local HelpSystem = {
     _activeTooltips = {},
     
@@ -565,6 +626,7 @@ return {
     Notification = NotificationSystem,
     Help = HelpSystem
 }
+
 
 -- Part 10: Context Menu System
 local ContextMenuSystem = {
@@ -751,7 +813,7 @@ local DialogSystem = {
     end
 }
 
-
+-- Part 12: Main Export & Integration
 local ProgLib = {
     Theme = ThemeManager.Themes.Default.Dark,
     Animation = AnimationSystem,
@@ -788,6 +850,7 @@ end)
 return ProgLib
 
 
+-- الجزء 13: نظام التأثيرات المتقدمة 
 local AdvancedEffects = {
     _effects = {},
 
@@ -826,7 +889,7 @@ local AdvancedEffects = {
     end
 }
 
-
+-- الجزء 14: نظام الأزرار المتقدمة
 local AdvancedButtons = {
     createGradientButton = function(properties)
         local button = Instance.new("TextButton")
@@ -853,7 +916,7 @@ local AdvancedButtons = {
     end,
 }
 
-
+-- الجزء 15: نظام الحركات 
 local Animations = {
     slideIn = function(instance, direction, duration)
         local startPos = instance.Position
@@ -878,4 +941,382 @@ local Animations = {
         tween:Play()
         return tween
     end,
+}
+
+
+-- الجزء 16: نظام القوائم المتقدم
+local AdvancedMenuSystem = {
+   createMenu = function(properties)
+       local menu = Instance.new("Frame")
+       menu.Size = UDim2.new(0, 200, 0, 300)
+       menu.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+       menu.BorderSizePixel = 0
+
+       local title = Instance.new("TextLabel")
+       title.Size = UDim2.new(1, 0, 0, 40)
+       title.BackgroundTransparency = 1
+       title.Text = properties.Title or "القائمة"
+       title.TextColor3 = Color3.fromRGB(255, 255, 255)
+       title.Font = Enum.Font.GothamBold
+       title.TextSize = 16
+       title.Parent = menu
+
+       local items = Instance.new("ScrollingFrame")
+       items.Size = UDim2.new(1, 0, 1, -40)
+       items.Position = UDim2.new(0, 0, 0, 40)
+       items.BackgroundTransparency = 1
+       items.ScrollBarThickness = 4
+       items.Parent = menu
+
+       return menu
+   end
+}
+
+-- الجزء 17: نظام التحكم بالألوان
+local ColorSystem = {
+   _activeColors = {},
+   
+   createColorPicker = function(properties)
+       local picker = Instance.new("Frame")
+       picker.Size = UDim2.new(0, 200, 0, 250)
+       picker.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+       
+       local hueSlider = Instance.new("Frame")
+       hueSlider.Size = UDim2.new(1, -20, 0, 20)
+       hueSlider.Position = UDim2.new(0, 10, 1, -30)
+       hueSlider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+       hueSlider.Parent = picker
+       
+       local colorDisplay = Instance.new("Frame")
+       colorDisplay.Size = UDim2.new(1, -20, 1, -60)
+       colorDisplay.Position = UDim2.new(0, 10, 0, 10)
+       colorDisplay.BackgroundColor3 = properties.DefaultColor or Color3.fromRGB(255, 0, 0)
+       colorDisplay.Parent = picker
+       
+       return picker
+   end
+}
+
+-- الجزء 18: نظام التأثيرات الحركية
+local MotionEffects = {
+   _effects = {},
+   
+   createWave = function(instance)
+       local wave = Instance.new("Frame")
+       wave.Size = UDim2.new(0, 0, 0, 0)
+       wave.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+       wave.BackgroundTransparency = 0.8
+       wave.Parent = instance
+       
+       local animation = game:GetService("TweenService"):Create(
+           wave,
+           TweenInfo.new(0.5),
+           {
+               Size = UDim2.new(2, 0, 2, 0),
+               BackgroundTransparency = 1
+           }
+       )
+       
+       animation:Play()
+       animation.Completed:Connect(function()
+           wave:Destroy()
+       end)
+   end,
+   
+   createPulse = function(instance, properties)
+       local originalSize = instance.Size
+       local expandedSize = UDim2.new(
+           originalSize.X.Scale * 1.1,
+           originalSize.X.Offset,
+           originalSize.Y.Scale * 1.1,
+           originalSize.Y.Offset
+       )
+       
+       while true do
+           local expand = game:GetService("TweenService"):Create(
+               instance,
+               TweenInfo.new(0.5),
+               {Size = expandedSize}
+           )
+           
+           local shrink = game:GetService("TweenService"):Create(
+               instance,
+               TweenInfo.new(0.5),
+               {Size = originalSize}
+           )
+           
+           expand:Play()
+           wait(0.5)
+           shrink:Play()
+           wait(0.5)
+       end
+   end
+}
+
+-- الجزء 19: نظام الأشكال المتقدم
+local ShapeSystem = {
+   createCircle = function(properties)
+       local circle = Instance.new("Frame")
+       circle.Size = properties.Size or UDim2.new(0, 100, 0, 100)
+       circle.BackgroundColor3 = properties.Color or Color3.fromRGB(255, 255, 255)
+       
+       local corner = Instance.new("UICorner")
+       corner.CornerRadius = UDim.new(1, 0)
+       corner.Parent = circle
+       
+       return circle
+   end,
+   
+   createTriangle = function(properties)
+       local triangle = Instance.new("ImageLabel")
+       triangle.Size = properties.Size or UDim2.new(0, 100, 0, 100)
+       triangle.BackgroundTransparency = 1
+       triangle.Image = "rbxassetid://triangle_image_id"
+       triangle.ImageColor3 = properties.Color or Color3.fromRGB(255, 255, 255)
+       
+       return triangle
+   end
+}
+
+-- الجزء 20: نظام الإشعارات المتقدم
+local AdvancedNotifications = {
+   _queue = {},
+   
+   show = function(properties)
+       local notification = Instance.new("Frame")
+       notification.Size = UDim2.new(0, 300, 0, 80)
+       notification.Position = UDim2.new(1, 20, 1, -90)
+       notification.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+       
+       local title = Instance.new("TextLabel")
+       title.Text = properties.Title or "إشعار"
+       title.Parent = notification
+       
+       local message = Instance.new("TextLabel")
+       message.Text = properties.Message or ""
+       message.Parent = notification
+       
+       game:GetService("TweenService"):Create(
+           notification,
+           TweenInfo.new(0.5),
+           {Position = UDim2.new(1, -320, 1, -90)}
+       ):Play()
+       
+       wait(properties.Duration or 3)
+       
+       game:GetService("TweenService"):Create(
+           notification,
+           TweenInfo.new(0.5),
+           {Position = UDim2.new(1, 20, 1, -90)}
+       ):Play()
+       
+       wait(0.5)
+       notification:Destroy()
+   end
+}
+
+return {
+   AdvancedMenu = AdvancedMenuSystem,
+   ColorPicker = ColorSystem,
+   Motion = MotionEffects,
+   Shapes = ShapeSystem,
+   Notifications = AdvancedNotifications
+}
+
+-- الجزء 21: نظام الرسوم المتحركة المتقدم
+local AnimationsPlus = {
+   createFloating = function(instance)
+       local originalPosition = instance.Position
+       
+       while true do
+           local upTween = game:GetService("TweenService"):Create(
+               instance,
+               TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+               {Position = UDim2.new(
+                   originalPosition.X.Scale,
+                   originalPosition.X.Offset,
+                   originalPosition.Y.Scale,
+                   originalPosition.Y.Offset - 10
+               )}
+           )
+           
+           local downTween = game:GetService("TweenService"):Create(
+               instance,
+               TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+               {Position = originalPosition}
+           )
+           
+           upTween:Play()
+           wait(1.5)
+           downTween:Play()
+           wait(1.5)
+       end
+   end,
+   
+   createSpinning = function(instance, speed)
+       local rotation = 0
+       
+       game:GetService("RunService").RenderStepped:Connect(function()
+           rotation = rotation + (speed or 1)
+           instance.Rotation = rotation
+           
+           if rotation >= 360 then
+               rotation = 0
+           end
+       end)
+   end,
+   
+   createBouncing = function(instance)
+       local originalSize = instance.Size
+       
+       while true do
+           local squeezeTween = game:GetService("TweenService"):Create(
+               instance,
+               TweenInfo.new(0.5, Enum.EasingStyle.Bounce),
+               {
+                   Size = UDim2.new(
+                       originalSize.X.Scale * 0.9,
+                       originalSize.X.Offset,
+                       originalSize.Y.Scale * 1.1,
+                       originalSize.Y.Offset
+                   )
+               }
+           )
+           
+           local restoreTween = game:GetService("TweenService"):Create(
+               instance,
+               TweenInfo.new(0.5, Enum.EasingStyle.Bounce),
+               {Size = originalSize}
+           )
+           
+           squeezeTween:Play()
+           wait(0.5)
+           restoreTween:Play()
+           wait(0.5)
+       end
+   end
+}
+
+-- الجزء 22: نظام القوائم المنسدلة المتقدم
+local AdvancedDropdown = {
+   create = function(properties)
+       local dropdown = Instance.new("Frame")
+       dropdown.Size = UDim2.new(0, 200, 0, 40)
+       dropdown.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+       
+       local selected = Instance.new("TextLabel")
+       selected.Size = UDim2.new(1, -40, 1, 0)
+       selected.Position = UDim2.new(0, 10, 0, 0)
+       selected.BackgroundTransparency = 1
+       selected.Text = properties.Placeholder or "اختر..."
+       selected.TextColor3 = Color3.fromRGB(200, 200, 200)
+       selected.TextXAlignment = Enum.TextXAlignment.Left
+       selected.Parent = dropdown
+       
+       local arrow = Instance.new("TextLabel")
+       arrow.Size = UDim2.new(0, 20, 1, 0)
+       arrow.Position = UDim2.new(1, -30, 0, 0)
+       arrow.BackgroundTransparency = 1
+       arrow.Text = "▼"
+       arrow.TextColor3 = Color3.fromRGB(200, 200, 200)
+       arrow.Parent = dropdown
+       
+       local optionsList = Instance.new("Frame")
+       optionsList.Size = UDim2.new(1, 0, 0, 0)
+       optionsList.Position = UDim2.new(0, 0, 1, 0)
+       optionsList.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+       optionsList.Visible = false
+       optionsList.Parent = dropdown
+       
+       return dropdown
+   end
+}
+
+-- الجزء 23: نظام التحديثات التلقائية
+local AutoUpdateSystem = {
+   _version = "5.0.0",
+   _components = {},
+   
+   registerComponent = function(self, component)
+       table.insert(self._components, component)
+   end,
+   
+   refreshAll = function(self)
+       for _, component in ipairs(self._components) do
+           if component.refresh then
+               component:refresh()
+           end
+       end
+   end,
+   
+   checkForUpdates = function(self)
+       -- هنا يمكن إضافة منطق للتحقق من التحديثات
+       return false
+   end
+}
+
+-- الجزء 24: نظام الأداء المتقدم
+local PerformanceSystem = {
+   _monitoring = false,
+   _stats = {},
+   
+   startMonitoring = function(self)
+       self._monitoring = true
+       
+       game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+           if self._monitoring then
+               table.insert(self._stats, deltaTime)
+               if #self._stats > 100 then
+                   table.remove(self._stats, 1)
+               end
+           end
+       end)
+   end,
+   
+   getAverageFPS = function(self)
+       if #self._stats == 0 then return 0 end
+       
+       local sum = 0
+       for _, deltaTime in ipairs(self._stats) do
+           sum = sum + (1 / deltaTime)
+       end
+       return sum / #self._stats
+   end
+}
+
+-- الجزء 25: نظام التحكم بالنوافذ المتقدم
+local WindowManager = {
+   _windows = {},
+   _activeWindow = nil,
+   
+   createWindow = function(self, properties)
+       local window = Instance.new("Frame")
+       window.Size = properties.Size or UDim2.new(0, 400, 0, 300)
+       window.Position = properties.Position or UDim2.new(0.5, -200, 0.5, -150)
+       window.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+       
+       -- إضافة شريط العنوان
+       local titleBar = Instance.new("Frame")
+       titleBar.Size = UDim2.new(1, 0, 0, 30)
+       titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+       titleBar.Parent = window
+       
+       local title = Instance.new("TextLabel")
+       title.Size = UDim2.new(1, -60, 1, 0)
+       title.BackgroundTransparency = 1
+       title.Text = properties.Title or "نافذة جديدة"
+       title.TextColor3 = Color3.fromRGB(255, 255, 255)
+       title.Parent = titleBar
+       
+       local closeButton = Instance.new("TextButton")
+       closeButton.Size = UDim2.new(0, 30, 0, 30)
+       closeButton.Position = UDim2.new(1, -30, 0, 0)
+       closeButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+       closeButton.Text = "×"
+       closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+       closeButton.Parent = titleBar
+       
+       table.insert(self._windows, window)
+       return window
+   end
 }
