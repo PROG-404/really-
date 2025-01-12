@@ -9,8 +9,10 @@ _G.AutoClick = true
 -- Function 
 
 Function AutoClick
-  _G.AutoClick == true 
-	--server
+  _G.AutoClick == true
+--server
+local Remotes = ReplicatedStorage:WaitForChild("Remotes").Remotes.Tab()
+	wait(0.1)
 end)
 local mainButton = ProgLib.UI.Components.Button.new({
     Text = "Remote",
