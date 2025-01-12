@@ -3,6 +3,8 @@ local mainWindow = ProgLib.UI.Window.new({    Title = "Window Prog",  Size = UDi
 
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
 -- Value 
 _G.AutoClick = true
 
