@@ -1,10 +1,14 @@
 local ProtLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/PROG-404/really-/refs/heads/main/Library.lua"))()
 local mainWindow = ProgLib.UI.Window.new({    Title = "Window Prog",  Size = UDim2.new(0, 600, 0, 400),  Position = UDim2.new(0.5, -300, 0.5, -200), ProgLib:setTheme("Dark")})
-
+-- give the server
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
-
+-- Local Players 
+local RenderStepped = RunService.RenderStepped
+local Heartbeat = RunService.Heartbeat
+local Stepped = RunService.Stepped
+local Player = Players.LocalPlayer
 -- Value 
 _G.AutoClick = true
 
