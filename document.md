@@ -1,49 +1,7 @@
 ## Library 
 
 ```lua
-local ProtLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/PROG-404/really-/refs/heads/main/Library.lua"))()
-```
-# Theme
-```lua
-ProgLib:setTheme("Dark")
-```
-# Add window 
-
-```lua
-local mainWindow = ProgLib.UI.Window.new({    Title = "Window Prog",  Size = UDim2.new(0, 600, 0, 400),  Position = UDim2.new(0.5, -300, 0.5, -200)})
-```
-# Home button
-```lua
-local mainButton = ProgLib.UI.Components.Button.new({
-    Text = "Button",
-    Size = UDim2.new(0, 200, 0, 40),
-    Position = UDim2.new(0.5, -100, 0.2, 0),
-    OnClick = function()
-```
-
-# Touch and address
-
-```lua
-        ProgLib.UI.Notification.notify({
-            Title = "Title",
-            Message = "Masge",
-            Duration = 3
-        })
-    end,
-    Parent = mainWindow
-})
-```
-# Slider 
-```lua
-local slider = ProgLib.UI.Components.Slider.new({
-    Title = "Slider",
-    Min = 0,
-    Max = 100,
-    Default = 50,
-    Size = UDim2.new(0, 200, 0, 50),
-    Position = UDim2.new(0.5, -100, 0.4, 0),
-    Parent = mainWindow
-})
+local ProtLib = loadstring(game:HttpGet(""))()
 ```
 
 # Functions that help you build your own script
