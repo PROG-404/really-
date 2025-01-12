@@ -8,7 +8,7 @@ _G.AutoClick = true
 
 -- Function 
 
-Function AutoClick
+Function AutoClick will
   _G.AutoClick == true
 --server
 local Remotes = ReplicatedStorage:WaitForChild("Remotes").Remotes.Tab()
@@ -19,3 +19,6 @@ local mainButton = ProgLib.UI.Components.Button.new({
     Size = UDim2.new(0, 200, 0, 40),
     Position = UDim2.new(0.5, -100, 0.2, 0),
     OnClick = function()
+		_G.AutoClick = true
+		print("AutoClick... Tab ...")
+end})
