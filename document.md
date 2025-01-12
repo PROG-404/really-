@@ -10,10 +10,7 @@ ProgLib:setTheme("Dark")
 # Add window 
 
 ```lua
-local mainWindow = ProgLib.UI.Window.new({
-    Title = "Window Prog",
-    Size = UDim2.new(0, 600, 0, 400),
-    Position = UDim2.new(0.5, -300, 0.5, -200)
+local mainWindow = ProgLib.UI.Window.new({    Title = "Window Prog",  Size = UDim2.new(0, 600, 0, 400),  Position = UDim2.new(0.5, -300, 0.5, -200)
 })
 ```
 # Home button
