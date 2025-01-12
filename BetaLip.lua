@@ -14,7 +14,7 @@ _G.AutoClick = true
 
 -- Function 
 
-Function AutoClick 
+Function AutoClick ()
   _G.AutoClick == true
 --server
 local Remotes = ReplicatedStorage:WaitForChild("Remotes").Remotes.Tab()
