@@ -248,11 +248,11 @@ tab2:AddButton({
 })
 
 ```
-#
+# information
 
 ```lua
 tab2:AddParagraph({
-    Title = "Information about you ex",
+    Title = "Information about you ", -- example 
     Text = [[
         - text
         - text
@@ -262,7 +262,7 @@ tab2:AddParagraph({
 })
 ```
 
-# information
+# Discord added
 
 ```lua
 tab2:AddDiscordInvite({
