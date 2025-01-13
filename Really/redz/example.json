@@ -1,67 +1,67 @@
 {
     "settings": {
-        "toggleContinuousReset": false,  // عربي: تفعيل/تعطيل إعادة التعيين التلقائي | English: Enable/Disable auto reset
-        "autoFarm": false,  // عربي: تفعيل/تعطيل الزراعة التلقائية | English: Enable/Disable auto farming
-        "preferredWeapon": "Sword",  // عربي: السلاح المفضل للاعب | English: Player's preferred weapon
-        "farmSpeed": 5,  // عربي: سرعة الزراعة (1 = بطيء, 10 = سريع) | English: Farming speed (1 = slow, 10 = fast)
-        "enableNotifications": true,  // عربي: تفعيل/تعطيل الإشعارات | English: Enable/Disable notifications
-        "autoSellItems": false,  // عربي: تفعيل/تعطيل البيع التلقائي للعناصر | English: Enable/Disable auto sell items
-        "autoBuyItems": false,  // عربي: تفعيل/تعطيل الشراء التلقائي للعناصر | English: Enable/Disable auto buy items
-        "maxFarmDistance": 50,  // عربي: أقصى مسافة للزراعة التلقائية | English: Maximum distance for auto farming
-        "enableAntiAfk": true,  // عربي: تفعيل/تعطيل ميزة منع الخروج التلقائي (AFK) | English: Enable/Disable anti-AFK feature
-        "npcLocations": {  // عربي: مواقع NPCs للفِرق | English: NPC locations for teams
-            "pirate": {  // عربي: موقع NPC القراصنة | English: Pirate NPC location
-                "name": "Pirate NPC",  // عربي: اسم NPC | English: NPC name
-                "position": [100, 5, 50]  // عربي: موقع NPC (X, Y, Z) | English: NPC position (X, Y, Z)
+        "toggleContinuousReset": false,  // Enable/Disable auto reset
+        "autoFarm": false,  // Enable/Disable auto farming
+        "preferredWeapon": "Sword",  // Player's preferred weapon
+        "farmSpeed": 5,  // Farming speed (1 = slow, 10 = fast)
+        "enableNotifications": true,  // Enable/Disable notifications
+        "autoSellItems": false,  // Enable/Disable auto sell items
+        "autoBuyItems": false,  // Enable/Disable auto buy items
+        "maxFarmDistance": 50,  // Maximum distance for auto farming
+        "enableAntiAfk": true,  // Enable/Disable anti-AFK feature
+        "npcLocations": {  // NPC locations for teams
+            "pirate": {  // Pirate NPC location
+                "name": "Pirate NPC",  // NPC name
+                "position": [100, 5, 50]  // NPC position (X, Y, Z)
             },
-            "marine": {  // عربي: موقع NPC المارين | English: Marine NPC location
-                "name": "Marine NPC",  // عربي: اسم NPC | English: NPC name
-                "position": [200, 5, 50]  // عربي: موقع NPC (X, Y, Z) | English: NPC position (X, Y, Z)
+            "marine": {  // Marine NPC location
+                "name": "Marine NPC",  // NPC name
+                "position": [200, 5, 50]  // NPC position (X, Y, Z)
             }
         }
     },
-    "userData": {  // عربي: بيانات اللاعب | English: Player data
-        "lastUsed": "2025-01-13",  // عربي: آخر مرة تم استخدام السكربت | English: Last time the script was used
-        "playTime": "0h 0m",  // عربي: وقت اللعب الإجمالي | English: Total playtime
-        "completedQuests": [],  // عربي: المهام المكتملة | English: Completed quests
-        "level": 1,  // عربي: مستوى اللاعب | English: Player level
-        "experience": 0,  // عربي: نقاط الخبرة | English: Experience points
-        "beli": 0,  // عربي: العملة (بلي) | English: Currency (Beli)
-        "fragments": 0,  // عربي: العملة (شظايا) | English: Currency (Fragments)
-        "inventory": {  // عربي: مخزون اللاعب | English: Player inventory
-            "weapons": ["Sword"],  // عربي: الأسلحة | English: Weapons
-            "fruits": [],  // عربي: الفواكه | English: Fruits
-            "accessories": []  // عربي: الإكسسوارات | English: Accessories
+    "userData": {  // Player data
+        "lastUsed": "2025-01-13",  // Last time the script was used
+        "playTime": "0h 0m",  // Total playtime
+        "completedQuests": [],  // Completed quests
+        "level": 1,  // Player level
+        "experience": 0,  // Experience points
+        "beli": 0,  // Currency (Beli)
+        "fragments": 0,  // Currency (Fragments)
+        "inventory": {  // Player inventory
+            "weapons": ["Sword"],  // Weapons
+            "fruits": [],  // Fruits
+            "accessories": []  // Accessories
         },
-        "stats": {  // عربي: إحصائيات اللاعب | English: Player stats
-            "strength": 10,  // عربي: القوة | English: Strength
-            "defense": 10,  // عربي: الدفاع | English: Defense
-            "agility": 10  // عربي: السرعة | English: Agility
+        "stats": {  // Player stats
+            "strength": 10,  // Strength
+            "defense": 10,  // Defense
+            "agility": 10  // Agility
         }
     },
-    "options": {  // عربي: خيارات إضافية | English: Additional options
-        "availablePlayers": [],  // عربي: قائمة اللاعبين المتاحين | English: List of available players
-        "gameMode": "Blox Fruits",  // عربي: وضع اللعبة | English: Game mode
-        "availableWeapons": ["Sword", "Gun", "Fighting Style"],  // عربي: الأسلحة المتاحة | English: Available weapons
-        "availableFruits": ["Flame", "Ice", "Dark"],  // عربي: الفواكه المتاحة | English: Available fruits
-        "availableAccessories": ["Black Cape", "Sunglasses"],  // عربي: الإكسسوارات المتاحة | English: Available accessories
-        "quests": {},  // عربي: المهام | English: Quests
-        "farmingLocations": [  // عربي: مواقع الزراعة | English: Farming locations
+    "options": {  // Additional options
+        "availablePlayers": [],  // List of available players
+        "gameMode": "Blox Fruits",  // Game mode
+        "availableWeapons": ["Sword", "Gun", "Fighting Style"],  // Available weapons
+        "availableFruits": ["Flame", "Ice", "Dark"],  // Available fruits
+        "availableAccessories": ["Black Cape", "Sunglasses"],  // Available accessories
+        "quests": {},  // Quests
+        "farmingLocations": [  // Farming locations
             {
-                "name": "Starter Island",  // عربي: اسم الموقع | English: Location name
-                "levelRange": "1-10",  // عربي: نطاق المستوى | English: Level range
-                "recommendedWeapon": "Sword"  // عربي: السلاح الموصى به | English: Recommended weapon
+                "name": "Starter Island",  // Location name
+                "levelRange": "1-10",  // Level range
+                "recommendedWeapon": "Sword"  // Recommended weapon
             },
             {
-                "name": "Pirate Village",  // عربي: اسم الموقع | English: Location name
-                "levelRange": "10-20",  // عربي: نطاق المستوى | English: Level range
-                "recommendedWeapon": "Gun"  // عربي: السلاح الموصى به | English: Recommended weapon
+                "name": "Pirate Village",  // Location name
+                "levelRange": "10-20",  // Level range
+                "recommendedWeapon": "Gun"  // Recommended weapon
             }
         ]
     },
-    "logs": {  // عربي: السجلات | English: Logs
-        "activity": [],  // عربي: نشاط السكربت | English: Script activity
-        "errors": [],  // عربي: الأخطاء | English: Errors
-        "warnings": []  // عربي: التحذيرات | English: Warnings
+    "logs": {  // Logs
+        "activity": [],  // Script activity
+        "errors": [],  // Errors
+        "warnings": []  // Warnings
     }
-        }
+}
