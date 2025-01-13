@@ -1,1 +1,9 @@
-
+{
+    "autoClickerSettings": {
+        "enabled": true,
+        "clickSpeed": 0.1,
+        "activationKey": "F",
+        "maxClicks": 100,
+        "repeat": true
+    }
+}
