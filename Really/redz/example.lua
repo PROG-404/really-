@@ -63,7 +63,7 @@ local window = redzlib:MakeWindow({
 -- Main Tab
 local Maintab = window:MakeTab({
     Name = "Main",
-    Icon = "rbxassetid://10709761889"
+    Icon = "rbxassetid://10709761889" -- or 98248469922804
 })
 
 Maintab:AddSection({
@@ -84,7 +84,7 @@ Maintab:AddButton({
 -- Farm Tab
 local Farmtab = window:MakeTab({
     Name = "Farm",
-    Icon = "rbxassetid://10709761889"
+    Icon = "rbxassetid://10709761889" -- or 98248469922804
 })
 
 Farmtab:AddSection({
