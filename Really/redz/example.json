@@ -1,9 +1,24 @@
 {
-    "autoClickerSettings": {
-        "enabled": true,
-        "clickSpeed": 0.1,
-        "activationKey": "F",
-        "maxClicks": 100,
-        "repeat": true
+    "settings": {
+        "toggleContinuousReset": false,
+        "autoFarm": false,
+        "preferredWeapon": "Sword",
+        "farmSpeed": 5,
+        "enableNotifications": true
+    },
+    "userData": {
+        "lastUsed": "2025-01-13",
+        "playTime": "0h 0m",
+        "completedQuests": [],
+        "level": 1
+    },
+    "options": {
+        "availablePlayers": [],
+        "gameMode": "Blox Fruits",
+        "availableWeapons": ["Sword", "Gun", "Fighting Style"],
+        "quests": {}
+    },
+    "logs": {
+        "activity": []
     }
 }
