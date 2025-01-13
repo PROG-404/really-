@@ -137,37 +137,19 @@ local window2 = redzlib:MakeWindow({
 
 ```lua 
 local tab1 = window1:MakeTab({
-    Name = "التبويب الأول",
-    Icon = "rbxassetid://123456789"
+    Name = "التبويب الأول", -- name tab
+    Icon = "rbxassetid://123456789" --icon
 })
 
 local tab2 = window1:MakeTab({
-    Name = "التبويب الثاني",
-    Icon = "rbxassetid://987654321"
+    Name = "التبويب الثاني", -- name tab
+    Icon = "rbxassetid://987654321" -- icon
 })
 ```
 
-```
+#
 
-
-
-
-
-
-
-
--- إضافة تبويبات متعددة في نفس النافذة
-local tab1 = window1:MakeTab({
-    Name = "التبويب الأول",
-    Icon = "rbxassetid://123456789"
-})
-
-local tab2 = window1:MakeTab({
-    Name = "التبويب الثاني",
-    Icon = "rbxassetid://987654321"
-})
-
--- إضافة قائمة منسدلة متعددة الاختيارات
+```lua
 tab1:AddDropdown({
     Name = "قائمة متعددة الاختيارات",
     Options = {"خيار 1", "خيار 2", "خيار 3", "خيار 4"},
@@ -178,6 +160,48 @@ tab1:AddDropdown({
     end
 })
 
+```
+
+#
+
+```lua
+tab1:AddButton({
+    Name = "زر مع تأكيد",
+    Desc = "يتطلب تأكيد قبل التنفيذ",
+    Callback = function()
+        window1:Dialog({
+            Title = "تأكيد",
+            Text = "هل أنت متأكد من تنفيذ هذا الإجراء؟",
+            Options = {
+        {"نعم", function()
+                    print("تم التأكيد")
+                end},
+                {"لا"}
+            }
+        })
+    end
+})
+```
+
+#
+
+```lua
+```
+#
+
+```lua
+```
+#
+
+```lua
+```
+#
+
+```lua
+```
+
+```
+
 -- إضافة زر مع تأكيد
 tab1:AddButton({
     Name = "زر مع تأكيد",
@@ -187,7 +211,7 @@ tab1:AddButton({
             Title = "تأكيد",
             Text = "هل أنت متأكد من تنفيذ هذا الإجراء؟",
             Options = {
-                {"نعم", function()
+        {"نعم", function()
                     print("تم التأكيد")
                 end},
                 {"لا"}
