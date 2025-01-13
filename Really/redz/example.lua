@@ -7,7 +7,7 @@ local window = redzlib:MakeWindow({
 
 local Maintab = window:MakeTab({
     Name = "Main",
-    Icon = "rbxassetid://123456789" -- icons 
+    Icon = "rbxassetid://10709761889" -- icons 
 })
 
 Maintab:AddSection({
@@ -16,6 +16,6 @@ Maintab:AddSection({
 
 Maintab:AddDiscordInvite({
     Name = "Invite",
-    Logo = "rbxassetid://123456789", -- icon roblox 
+    Logo = "rbxassetid://10709761889", -- icon roblox 
     Invite = "https://discord.gg/BnYk2BtZ" -- link discord 
 })
