@@ -84,7 +84,7 @@ Maintab:AddButton({
 -- Farm Tab
 local Farmtab = window:MakeTab({
     Name = "Farm",
-    Icon = "rbxassetid://10709761889" -- or 98248469922804
+    Icon = "rbxassetid://10709761889"
 })
 
 Farmtab:AddSection({
