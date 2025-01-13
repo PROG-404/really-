@@ -57,9 +57,9 @@ tab:AddToggle({
 
 ```lua
 tab:AddDropdown({
-    Name = "قائمة منسدلة",
-    Options = {"الخيار 1", "الخيار 2", "الخيار 3"},
-    Default = "الخيار 1",
+    Name = "Name Drop down list",
+    Options = {"Option 1", " 2 Option", " 3 Option"},
+    Default = "Option 1",
     Flag = "dropdown1",
     Callback = function(Value)
         print(Value)
@@ -122,12 +122,12 @@ tab:AddDiscordInvite({
 
 ```lua
 local window1 = redzlib:MakeWindow({
-    Name = "النافذة الأولى",
+    Name = "Name window 1",
     SubTitle = "window 1"
 })
 
 local window2 = redzlib:MakeWindow({
-    Name = "النافذة الثانية", 
+    Name = "Name Window 2", 
     SubTitle = window 2"
 })
 ```
@@ -137,23 +137,23 @@ local window2 = redzlib:MakeWindow({
 
 ```lua 
 local tab1 = window1:MakeTab({
-    Name = "التبويب الأول", -- name tab
+    Name = "Name Tab 1", -- name tab
     Icon = "rbxassetid://123456789" --icon
 })
 
 local tab2 = window1:MakeTab({
-    Name = "التبويب الثاني", -- name tab
+    Name = "Name Tab 2", -- name tab
     Icon = "rbxassetid://987654321" -- icon
 })
 ```
 
-#
+# Add Dropdown Multiple options
 
 ```lua
 tab1:AddDropdown({
-    Name = "قائمة متعددة الاختيارات",
-    Options = {"خيار 1", "خيار 2", "خيار 3", "خيار 4"},
-    Default = {"خيار 1", "خيار 2"},
+    Name = "Name Dropdown",
+    Options = {"Option 1", "Option 2", "Option 3", "Option 4"},
+    Default = {"Option 1", "Option 2"},
     MultiSelect = true,
     Callback = function(Value)
         print(table.concat(Value, ", "))
@@ -162,67 +162,32 @@ tab1:AddDropdown({
 
 ```
 
-#
+# Confirm button
 
 ```lua
 tab1:AddButton({
-    Name = "زر مع تأكيد",
-    Desc = "يتطلب تأكيد قبل التنفيذ",
+    Name = "Confirm button",
+    Desc = "Requires confirmation before execution",
     Callback = function()
         window1:Dialog({
-            Title = "تأكيد",
-            Text = "هل أنت متأكد من تنفيذ هذا الإجراء؟",
+            Title = "to be sure",
+            Text = "Are you sure to perform this procedure?",
             Options = {
-        {"نعم", function()
-                    print("تم التأكيد")
+        {"yes", function()
+                    print("Confirmed")
                 end},
-                {"لا"}
+                {"No"}
             }
         })
     end
 })
 ```
 
-#
+# Add slider together modules
 
 ```lua
-```
-#
-
-```lua
-```
-#
-
-```lua
-```
-#
-
-```lua
-```
-
-```
-
--- إضافة زر مع تأكيد
-tab1:AddButton({
-    Name = "زر مع تأكيد",
-    Desc = "يتطلب تأكيد قبل التنفيذ",
-    Callback = function()
-        window1:Dialog({
-            Title = "تأكيد",
-            Text = "هل أنت متأكد من تنفيذ هذا الإجراء؟",
-            Options = {
-        {"نعم", function()
-                    print("تم التأكيد")
-                end},
-                {"لا"}
-            }
-        })
-    end
-})
-
--- إضافة شريط تمرير مع وحدات
 tab1:AddSlider({
-    Name = "السرعة",
+    Name = "Name Slidr",
     Min = 0,
     Max = 100,
     Default = 16,
@@ -233,99 +198,121 @@ tab1:AddSlider({
     end
 })
 
--- إضافة قسم مع عناصر متعددة
-local section = tab2:AddSection({
-    Name = "إعدادات اللاعب"
-})
+```
+# toggles together notifications
 
--- إضافة مؤشرات تبديل مرتبطة
+```lua
 tab2:AddToggle({
-    Name = "تفعيل الطيران",
+    Name = "Flight activation (example)",
     Default = false,
     Flag = "flying",
     Callback = function(Value)
         if Value then
-            print("تم تفعيل الطيران")
+            print("Flight has been activated")
         else
-            print("تم إيقاف الطيران")
+            print("Flight has been stopped")
         end
     end
 })
+```
+# Text Box Together Check
 
--- إضافة مربع نص مع تحقق
+```lua
+
 tab2:AddTextBox({
-    Name = "اسم اللاعب",
+    Name = "Name Player",
     Default = "",
-    PlaceholderText = "ادخل اسم اللاعب",
+    PlaceholderText = "Add Name Player",
     ClearText = true,
     Callback = function(Value)
-        -- تحقق من صحة الاسم
+        -- Verify that the value is more than three characters long
         if #Value >= 3 then
-            print("تم تعيين الاسم: " .. Value)
+            print(" The name has been assigned: " .. Value)
         else
-            print("الاسم قصير جداً")
+            print("The name is too short")
         end
     end
 })
+```
+# Update Settings
 
--- إضافة زر تحديث
+```lua
 tab2:AddButton({
-    Name = "تحديث",
-    Desc = "تحديث الإعدادات",
+    Name = "Update",
+    Desc = "Update Settings",
     Callback = function()
-        print("جاري التحديث...")
+        print("Updating...")
         wait(1)
-        print("تم التحديث!")
+        print("has been updated!")
     end
 })
 
--- إضافة نص معلوماتي
+```
+#
+
+```lua
 tab2:AddParagraph({
-    Title = "معلومات",
+    Title = "Information about you ex",
     Text = [[
-        - استخدم الزر للتحديث
-        - يمكنك تغيير الإعدادات في أي وقت
-        - احفظ التغييرات قبل الخروج
+        - text
+        - text
+        - text
+		-- You can add more
     ]]
 })
+```
 
--- إضافة رابط ديسكورد مع شعار مخصص
+# information
+
+```lua
 tab2:AddDiscordInvite({
-    Name = "مجتمع السكربت",
-    Logo = "rbxassetid://123456789",
-    Invite = "https://discord.gg/yourserver",
-    Desc = "انضم إلى مجتمعنا للحصول على المساعدة والتحديثات!"
+    Name = "The name becomes clear and white",
+    Logo = "rbxassetid://123456789", -- The Discord image must be with a Reblox link
+    Invite = "https://discord.gg/yourserver", -- Link to add Discord
+    Desc = "The name becomes transparent underneath"
 })
+```
 
--- إضافة دالة تحديث العناصر
+# Updated some buttons
+
+```lua
 local function UpdateElements()
     tab1:UpdateSlider("speed", 50)
     tab2:UpdateToggle("flying", true)
 end
+```
+# Save information
 
--- إضافة دالة حفظ الإعدادات
+```lua
 local function SaveSettings()
     local settings = {
         speed = redzlib:GetFlag("speed"),
         flying = redzlib:GetFlag("flying")
     }
     
-    print("تم حفظ الإعدادات:", settings)
+    print("Settings have been saved:", settings)
 end
+```
 
--- إضافة مؤقت لحفظ الإعدادات تلقائياً
+# Save items
+
+```lua
 spawn(function()
-    while wait(60) do -- حفظ كل دقيقة
+    while wait(60) do -- Save every minute
         SaveSettings()
     end
 end)
+```
 
--- إضافة دالة تنظيف عند إغلاق السكربت
+# Close script
+
+```lua
 game:GetService("CoreGui").ChildRemoved:Connect(function(child)
     if child.Name == "redz Library V5" then
         SaveSettings()
-        print("تم إغلاق السكربت")
+        print("The script has been closed")
     end
 end)
-
 ```
+
+# There may be items that are not listed here, so please wait if you don't see what you want
