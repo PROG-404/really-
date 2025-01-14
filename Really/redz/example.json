@@ -2,7 +2,7 @@
     "settings": {
         "autoFarm": {
             "enabled": false,
-            "targetType": "NPCs",
+            "targetType": "NPCs",  
             "attackRange": 50,
             "preferredWeapon": "Sword"
         },
