@@ -15,7 +15,7 @@ local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/realr
 -- Create Window
 local window = redzlib:MakeWindow({
     Name = "Blox Fruits Script",
-    SubTitle = "By PORG",
+    SubTitle = "By YourName",
     SaveFolder = "example.json"
 })
 
@@ -32,9 +32,22 @@ local function loadSettings()
             settings = {
                 autoFarm = {
                     enabled = false,
-                    targetType = "NPCs",
+                    targetType = "StaticBots",
                     attackRange = 50,
                     preferredWeapon = "Sword"
+                },
+                staticBots = {
+                    locations = {
+                        {
+                            name = "Bot Location 1",
+                            position = {100, 5, 50}
+                        },
+                        {
+                            name = "Bot Location 2",
+                            position = {150, 5, 75}
+                        }
+                    },
+                    collectionPoint = {200, 5, 100}
                 },
                 quests = {
                     enabled = false,
@@ -138,6 +151,28 @@ local function acceptQuest(questType)
     end
 end
 
+-- Function to gather and kill static bots
+local function gatherAndKillBots()
+    local collectionPoint = settings.settings.staticBots.collectionPoint
+    for _, botLocation in ipairs(settings.settings.staticBots.locations) do
+        -- Move to bot location
+        interactWithNPC(botLocation.position)
+
+        -- Simulate killing the bot
+        game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.E, false, game)
+        task.wait(0.1)
+        game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.E, false, game)
+    end
+
+    -- Move to collection point
+    interactWithNPC(collectionPoint)
+
+    -- Simulate killing all bots at once
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.E, false, game)
+    task.wait(0.1)
+    game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.E, false, game)
+end
+
 -- Auto Farm Toggle
 local autoFarmEnabled = false
 local autoFarmConnection
@@ -154,21 +189,8 @@ window:MakeTab({
                 -- Accept quest
                 acceptQuest(settings.settings.quests.currentQuest)
 
-                -- Find and attack targets
-                local target = nil
-                for _, npc in ipairs(game:GetService("Workspace").NPCs:GetChildren()) do
-                    if npc:FindFirstChild("HumanoidRootPart") then
-                        target = npc
-                        break
-                    end
-                end
-
-                if target then
-                    HumanoidRootPart.CFrame = target.HumanoidRootPart.CFrame
-                    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.E, false, game)
-                    task.wait(0.1)
-                    game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.E, false, game)
-                end
+                -- Gather and kill static bots
+                gatherAndKillBots()
             end)
         else
             if autoFarmConnection then
