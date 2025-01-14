@@ -1,25 +1,25 @@
--- Services
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
-
--- Player
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
--- Load RedzLib
-local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/realredz/RedzLibV5/refs/heads/main/Source.lua"))()
+local validPlaceIds = {2753915549, 4442272183, 7449423635}
+local isValidGame = false
+for _, id in ipairs(validPlaceIds) do
+    if game.PlaceId == id then
+        isValidGame = true
+        break
+    end
+end
 
--- Create Window
-local window = redzlib:MakeWindow({
-    Name = "Blox Fruits Script",
-    SubTitle = "By YourName",
-    SaveFolder = "example.json"
-})
+if not isValidGame then
+    warn("This script works only on Blox Fruits!")
+    return
+end
 
--- Load settings from JSON
 local function loadSettings()
     local success, result = pcall(function()
         return HttpService:JSONDecode(readfile("example.json"))
@@ -30,70 +30,30 @@ local function loadSettings()
         warn("Failed to load settings. Using default settings.")
         return {
             settings = {
-                autoFarm = {
-                    enabled = false,
-                    targetType = "StaticBots",
-                    attackRange = 50,
-                    preferredWeapon = "Sword"
-                },
-                staticBots = {
-                    locations = {
-                        {
-                            name = "Bot Location 1",
-                            position = {100, 5, 50}
-                        },
-                        {
-                            name = "Bot Location 2",
-                            position = {150, 5, 75}
-                        }
+                toggleContinuousReset = false,
+                autoFarm = false,
+                preferredWeapon = "Sword",
+                farmSpeed = 5,
+                enableNotifications = true,
+                autoSellItems = false,
+                autoBuyItems = false,
+                maxFarmDistance = 50,
+                enableAntiAfk = true,
+                npcLocations = {
+                    pirate = {
+                        name = "Pirate NPC",
+                        position = {100, 5, 50}
                     },
-                    collectionPoint = {200, 5, 100}
-                },
-                quests = {
-                    enabled = false,
-                    currentQuest = "Pirate",
-                    questLocations = {
-                        Pirate = {
-                            name = "Pirate Starter",
-                            npcName = "Pirate Quest Giver",
-                            position = {100, 5, 50},
-                            requiredLevel = 1
-                        },
-                        Marine = {
-                            name = "Marine Starter",
-                            npcName = "Marine Quest Giver",
-                            position = {200, 5, 50},
-                            requiredLevel = 10
-                        },
-                        Boss = {
-                            name = "Boss Location",
-                            npcName = "Boss NPC",
-                            position = {300, 5, 50},
-                            requiredLevel = 20
-                        }
+                    marine = {
+                        name = "Marine NPC",
+                        position = {200, 5, 50}
                     }
-                },
-                teleport = {
-                    enabled = false,
-                    locations = {
-                        {
-                            name = "Starter Island",
-                            position = {100, 5, 50}
-                        },
-                        {
-                            name = "Pirate Village",
-                            position = {200, 5, 50}
-                        }
-                    }
-                },
-                misc = {
-                    antiAfk = true,
-                    notifications = true
                 }
             },
             userData = {
                 lastUsed = os.date("%Y-%m-%d"),
                 playTime = "0h 0m",
+                completedQuests = {},
                 level = 1,
                 experience = 0,
                 beli = 0,
@@ -109,6 +69,26 @@ local function loadSettings()
                     agility = 10
                 }
             },
+            options = {
+                availablePlayers = {},
+                gameMode = "Blox Fruits",
+                availableWeapons = {"Sword", "Gun", "Fighting Style"},
+                availableFruits = {"Flame", "Ice", "Dark"},
+                availableAccessories = {"Black Cape", "Sunglasses"},
+                quests = {},
+                farmingLocations = {
+                    {
+                        name = "Starter Island",
+                        levelRange = "1-10",
+                        recommendedWeapon = "Sword"
+                    },
+                    {
+                        name = "Pirate Village",
+                        levelRange = "10-20",
+                        recommendedWeapon = "Gun"
+                    }
+                }
+            },
             logs = {
                 activity = {},
                 errors = {},
@@ -118,7 +98,6 @@ local function loadSettings()
     end
 end
 
--- Save settings to JSON
 local function saveSettings(data)
     local success, err = pcall(function()
         writefile("example.json", HttpService:JSONEncode(data))
@@ -128,82 +107,95 @@ local function saveSettings(data)
     end
 end
 
--- Load settings
 local settings = loadSettings()
 
--- Function to interact with NPC
 local function interactWithNPC(npcPosition)
-    local tweenInfo = TweenInfo.new(5, Enum.EasingStyle.Linear)
+    local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)
     local tween = TweenService:Create(HumanoidRootPart, tweenInfo, {CFrame = CFrame.new(unpack(npcPosition))})
     tween:Play()
     tween.Completed:Wait()
     warn("Interacted with NPC at position: " .. table.concat(npcPosition, ", "))
 end
 
--- Function to accept quest
-local function acceptQuest(questType)
-    local questData = settings.settings.quests.questLocations[questType]
-    if questData then
-        interactWithNPC(questData.position)
-        warn("Accepted quest: " .. questType)
-    else
-        warn("Quest data not found for: " .. questType)
-    end
-end
+local Quests = {
+    {
+        name = "Defeat Bandits",
+        minLevel = 1,
+        maxLevel = 10,
+        npcPosition = {120, 5, 60}
+    },
+    {
+        name = "Defeat Pirates",
+        minLevel = 10,
+        maxLevel = 20,
+        npcPosition = {220, 5, 60}
+    },
+    {
+        name = "Defeat Marines",
+        minLevel = 20,
+        maxLevel = 30,
+        npcPosition = {320, 5, 60}
+    }
+}
 
--- Function to gather and kill static bots
-local function gatherAndKillBots()
-    local collectionPoint = settings.settings.staticBots.collectionPoint
-    for _, botLocation in ipairs(settings.settings.staticBots.locations) do
-        -- Move to bot location
-        interactWithNPC(botLocation.position)
+settings.options.quests = Quests
+saveSettings(settings)
 
-        -- Simulate killing the bot
-        game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.E, false, game)
-        task.wait(0.1)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.E, false, game)
-    end
+local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/realredz/RedzLibV5/refs/heads/main/Source.lua"))()
+local window = redzlib:MakeWindow({
+    Name = "Blox peta", 
+    SubTitle = "Porg",
+    SaveFolder = "example.json"
+})
 
-    -- Move to collection point
-    interactWithNPC(collectionPoint)
-
-    -- Simulate killing all bots at once
-    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.E, false, game)
-    task.wait(0.1)
-    game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.E, false, game)
-end
-
--- Auto Farm Toggle
-local autoFarmEnabled = false
-local autoFarmConnection
-window:MakeTab({
-    Name = "Farm",
+local Maintab = window:MakeTab({
+    Name = "Main",
     Icon = "rbxassetid://10709761889"
-}):AddToggle({
-    Name = "Enable Auto Farm",
-    Default = false,
-    Callback = function(Value)
-        autoFarmEnabled = Value
-        if autoFarmEnabled then
-            autoFarmConnection = RunService.Heartbeat:Connect(function()
-                -- Accept quest
-                acceptQuest(settings.settings.quests.currentQuest)
+})
 
-                -- Gather and kill static bots
-                gatherAndKillBots()
-            end)
-        else
-            if autoFarmConnection then
-                autoFarmConnection:Disconnect()
-            end
+Maintab:AddSection({
+    Name = "Main"
+})
+
+Maintab:AddButton({
+    Name = "Reset Player",
+    Callback = function()
+        if Player and Character then
+            Character:BreakJoints()
         end
     end
 })
 
--- Log Script Closure
+Maintab:AddButton({
+    Name = "Join Pirates",
+    Callback = function()
+        local npcPosition = settings.settings.npcLocations.pirate.position
+        interactWithNPC(npcPosition)
+    end
+})
+
+Maintab:AddButton({
+    Name = "Join Marines",
+    Callback = function()
+        local npcPosition = settings.settings.npcLocations.marine.position
+        interactWithNPC(npcPosition)
+    end
+})
+
+Maintab:AddButton({
+    Name = "Auto Accept Quests",
+    Callback = function()
+        autoAcceptQuests()
+    end
+})
+
+settings.userData.lastUsed = os.date("%Y-%m-%d")
+saveSettings(settings)
+
 game:GetService("CoreGui").ChildRemoved:Connect(function(child)
     if child.Name == "redz Library V5" then
         saveSettings(settings)
         print("The script has been closed")
     end
 end)
+
