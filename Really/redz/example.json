@@ -1,29 +1,56 @@
 {
     "settings": {
-        "toggleContinuousReset": false,
-        "autoFarm": false,
-        "preferredWeapon": "Sword",
-        "farmSpeed": 5,
-        "enableNotifications": true,
-        "autoSellItems": false,
-        "autoBuyItems": false,
-        "maxFarmDistance": 50,
-        "enableAntiAfk": true,
-        "npcLocations": {
-            "pirate": {
-                "name": "Pirate NPC",
-                "position": [100, 5, 50]
-            },
-            "marine": {
-                "name": "Marine NPC",
-                "position": [200, 5, 50]
+        "autoFarm": {
+            "enabled": false,
+            "targetType": "NPCs",  // NPCs, Players, Bosses
+            "attackRange": 50,
+            "preferredWeapon": "Sword"
+        },
+        "quests": {
+            "enabled": false,
+            "currentQuest": "Pirate",  // Pirate, Marine, Boss
+            "questLocations": {
+                "Pirate": {
+                    "name": "Pirate Starter",
+                    "npcName": "Pirate Quest Giver",
+                    "position": [100, 5, 50],
+                    "requiredLevel": 1
+                },
+                "Marine": {
+                    "name": "Marine Starter",
+                    "npcName": "Marine Quest Giver",
+                    "position": [200, 5, 50],
+                    "requiredLevel": 10
+                },
+                "Boss": {
+                    "name": "Boss Location",
+                    "npcName": "Boss NPC",
+                    "position": [300, 5, 50],
+                    "requiredLevel": 20
+                }
             }
+        },
+        "teleport": {
+            "enabled": false,
+            "locations": [
+                {
+                    "name": "Starter Island",
+                    "position": [100, 5, 50]
+                },
+                {
+                    "name": "Pirate Village",
+                    "position": [200, 5, 50]
+                }
+            ]
+        },
+        "misc": {
+            "antiAfk": true,
+            "notifications": true
         }
     },
     "userData": {
         "lastUsed": "2025-01-13",
         "playTime": "0h 0m",
-        "completedQuests": [],
         "level": 1,
         "experience": 0,
         "beli": 0,
@@ -38,26 +65,6 @@
             "defense": 10,
             "agility": 10
         }
-    },
-    "options": {
-        "availablePlayers": [],
-        "gameMode": "Blox Fruits",
-        "availableWeapons": ["Sword", "Gun", "Fighting Style"],
-        "availableFruits": ["Flame", "Ice", "Dark"],
-        "availableAccessories": ["Black Cape", "Sunglasses"],
-        "quests": {},
-        "farmingLocations": [
-            {
-                "name": "Starter Island",
-                "levelRange": "1-10",
-                "recommendedWeapon": "Sword"
-            },
-            {
-                "name": "Pirate Village",
-                "levelRange": "10-20",
-                "recommendedWeapon": "Gun"
-            }
-        ]
     },
     "logs": {
         "activity": [],
