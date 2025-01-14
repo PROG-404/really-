@@ -2,13 +2,13 @@
     "settings": {
         "autoFarm": {
             "enabled": false,
-            "targetType": "NPCs",  // NPCs, Players, Bosses
+            "targetType": "NPCs",
             "attackRange": 50,
             "preferredWeapon": "Sword"
         },
         "quests": {
             "enabled": false,
-            "currentQuest": "Pirate",  // Pirate, Marine, Boss
+            "currentQuest": "Pirate",  
             "questLocations": {
                 "Pirate": {
                     "name": "Pirate Starter",
