@@ -2042,3 +2042,654 @@ local AdvancedMotionSystem = {
        return tween
    end
 }
+
+function window:CreateTab(name)
+    local tab = {
+        sections = {}
+    }
+    
+    local tabButton = CreateElement("TextButton", {
+        Size = UDim2.new(0, 100, 0, 30),
+        BackgroundColor3 = Library.Colors.ElementBackground,
+        Text = name,
+        TextColor3 = Library.Colors.Text,
+        Font = Library.Fonts.Regular,
+        TextSize = 14
+    })
+    AddCorner(tabButton)
+    tabButton.Parent = titleBar  -- You might want to create a separate TabBar
+
+    function tab:AddSection(sectionName)
+        local section = {
+            frame = CreateElement("Frame", {
+                Size = UDim2.new(1, -10, 0, 0),
+                BackgroundColor3 = Library.Colors.Secondary,
+                AutomaticSize = Enum.AutomaticSize.Y
+            })
+        }
+        AddCorner(section.frame)
+
+        local sectionTitle = CreateElement("TextLabel", {
+            Size = UDim2.new(1, -20, 0, 30),
+            Position = UDim2.new(0, 10, 0, 0),
+            BackgroundTransparency = 1,
+            Text = sectionName,
+            TextColor3 = Library.Colors.Text,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Font = Library.Fonts.SemiBold
+        })
+        sectionTitle.Parent = section.frame
+
+        local sectionContent = CreateElement("Frame", {
+            Size = UDim2.new(1, -20, 0, 0),
+            Position = UDim2.new(0, 10, 0, 40),
+            BackgroundTransparency = 1,
+            AutomaticSize = Enum.AutomaticSize.Y
+        })
+        sectionContent.Parent = section.frame
+
+        function section:AddControl(control)
+            control.Parent = sectionContent
+            return control
+        end
+
+        section.frame.Parent = contentArea
+        table.insert(tab.sections, section)
+        return section
+    end
+
+    return tab
+ end
+  
+function window:AddDropdown(text, options)
+    local dropdown = CreateElement("Frame", {
+        Size = UDim2.new(1, -10, 0, 35),
+        BackgroundColor3 = Library.Colors.ElementBackground
+    })
+    AddCorner(dropdown)
+
+    local dropdownText = CreateElement("TextLabel", {
+        Size = UDim2.new(0.7, 0, 1, 0),
+        Position = UDim2.new(0, 10, 0, 0),
+        BackgroundTransparency = 1,
+        Text = text,
+        TextColor3 = Library.Colors.Text,
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
+    dropdownText.Parent = dropdown
+
+    local toggleButton = CreateElement("TextButton", {
+        Size = UDim2.new(0, 30, 0, 30),
+        Position = UDim2.new(1, -40, 0, 2),
+        BackgroundColor3 = Library.Colors.Accent,
+        Text = "▼",
+        TextColor3 = Library.Colors.Text
+    })
+    AddCorner(toggleButton)
+    toggleButton.Parent = dropdown
+
+    local dropdownFrame = CreateElement("Frame", {
+        Size = UDim2.new(1, 0, 0, 0),
+        Position = UDim2.new(0, 0, 1, 0),
+        BackgroundColor3 = Library.Colors.Secondary,
+        Visible = false
+    })
+    AddCorner(dropdownFrame)
+    dropdownFrame.Parent = dropdown
+
+    local isOpen = false
+    toggleButton.MouseButton1Click:Connect(function()
+        isOpen = not isOpen
+        dropdownFrame.Visible = isOpen
+        toggleButton.Text = isOpen and "▲" or "▼"
+
+        if isOpen then
+            for _, option in ipairs(options) do
+                local optionButton = CreateElement("TextButton", {
+                    Size = UDim2.new(1, 0, 0, 30),
+                    BackgroundColor3 = Library.Colors.ElementBackground,
+                    Text = option,
+                    TextColor3 = Library.Colors.Text
+                })
+                optionButton.MouseButton1Click:Connect(function()
+                    dropdownText.Text = option
+                    toggleButton:FireClick()  -- Close dropdown
+                end)
+                optionButton.Parent = dropdownFrame
+            end
+        end
+    end)
+
+    dropdown.Parent = contentArea
+    return dropdown
+   end
+
+function window:AddMultiSelect(text, options)
+    local multiSelect = CreateElement("Frame", {
+        Size = UDim2.new(1, -10, 0, 35),
+        BackgroundColor3 = Library.Colors.ElementBackground
+    })
+    AddCorner(multiSelect)
+
+    local selectText = CreateElement("TextLabel", {
+        Size = UDim2.new(0.7, 0, 1, 0),
+        Position = UDim2.new(0, 10, 0, 0),
+        BackgroundTransparency = 1,
+        Text = text,
+        TextColor3 = Library.Colors.Text,
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
+    selectText.Parent = multiSelect
+
+    local toggleButton = CreateElement("TextButton", {
+        Size = UDim2.new(0, 30, 0, 30),
+        Position = UDim2.new(1, -40, 0, 2),
+        BackgroundColor3 = Library.Colors.Accent,
+        Text = "▼",
+        TextColor3 = Library.Colors.Text
+    })
+    AddCorner(toggleButton)
+    toggleButton.Parent = multiSelect
+
+    local dropdownFrame = CreateElement("Frame", {
+        Size = UDim2.new(1, 0, 0, 0),
+        Position = UDim2.new(0, 0, 1, 0),
+        BackgroundColor3 = Library.Colors.Secondary,
+        Visible = false
+    })
+    AddCorner(dropdownFrame)
+    dropdownFrame.Parent = multiSelect
+
+    local selectedOptions = {}
+    local isOpen = false
+
+    toggleButton.MouseButton1Click:Connect(function()
+        isOpen = not isOpen
+        dropdownFrame.Visible = isOpen
+        toggleButton.Text = isOpen and "▲" or "▼"
+
+        if isOpen then
+            for _, option in ipairs(options) do
+                local optionButton = CreateElement("TextButton", {
+                    Size = UDim2.new(1, 0, 0, 30),
+                    BackgroundColor3 = Library.Colors.ElementBackground,
+                    Text = option,
+                    TextColor3 = Library.Colors.Text
+                })
+                
+                optionButton.MouseButton1Click:Connect(function()
+                    if not selectedOptions[option] then
+                        selectedOptions[option] = true
+                        optionButton.BackgroundColor3 = Library.Colors.Accent
+                    else
+                        selectedOptions[option] = nil
+                        optionButton.BackgroundColor3 = Library.Colors.ElementBackground
+                    end
+
+                    local selectedText = {}
+                    for opt, _ in pairs(selectedOptions) do
+                        table.insert(selectedText, opt)
+                    end
+                    selectText.Text = #selectedText > 0 and table.concat(selectedText, ", ") or text
+                end)
+                
+                optionButton.Parent = dropdownFrame
+            end
+        end
+    end)
+
+    multiSelect.Parent = contentArea
+    return multiSelect
+end
+
+function Library:CreateDraggableWindow(config)
+    local window = {}
+    local isDragging = false
+    local dragInput
+    local dragStart
+    local startPos
+
+    -- Main Window Frame
+    local frame = CreateElement("Frame", {
+        Size = UDim2.new(0, 500, 0, 400),
+        Position = UDim2.new(0.5, -250, 0.5, -200),
+        BackgroundColor3 = Library.Colors.Primary,
+        BorderSizePixel = 0
+    })
+    AddCorner(frame)
+    AddShadow(frame)
+
+    -- Draggable Header
+    local header = CreateElement("Frame", {
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundColor3 = Library.Colors.Secondary,
+        BorderSizePixel = 0
+    })
+    header.Parent = frame
+
+    -- Title
+    local titleLabel = CreateElement("TextLabel", {
+        Size = UDim2.new(1, -100, 1, 0),
+        Position = UDim2.new(0, 10, 0, 0),
+        Text = config.Title or "Draggable Window",
+        TextColor3 = Library.Colors.Text,
+        BackgroundTransparency = 1,
+        Font = Library.Fonts.Bold,
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
+    titleLabel.Parent = header
+
+    -- Drag Functionality
+    local function update(input)
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(
+            startPos.X.Scale, 
+            startPos.X.Offset + delta.X, 
+            startPos.Y.Scale, 
+            startPos.Y.Offset + delta.Y
+        )
+    end
+
+    header.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isDragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    isDragging = false
+                end
+            end)
+        end
+    end)
+
+    header.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and isDragging then
+            update(input)
+        end
+    end)
+
+    -- Snap to Grid
+    local function snapToGrid(position, gridSize)
+        gridSize = gridSize or 10
+        local x = math.floor(position.X.Offset / gridSize + 0.5) * gridSize
+        local y = math.floor(position.Y.Offset / gridSize + 0.5) * gridSize
+        return UDim2.new(position.X.Scale, x, position.Y.Scale, y)
+    end
+
+    -- Optional Boundary Constraints
+    local function constrainPosition(newPos)
+        local screenSize = game.Workspace.CurrentCamera.ViewportSize
+        local frameSize = frame.AbsoluteSize
+
+        newPos = UDim2.new(
+            newPos.X.Scale, 
+            math.clamp(newPos.X.Offset, 0, screenSize.X - frameSize.X),
+            newPos.Y.Scale, 
+            math.clamp(newPos.Y.Offset, 0, screenSize.Y - frameSize.Y)
+        )
+
+        return newPos
+    end
+
+    -- Smooth Movement
+    local function smoothMove(targetPos)
+        local tweenInfo = TweenInfo.new(
+            0.2, 
+            Library.Settings.EasingStyle, 
+            Enum.EasingDirection.Out
+        )
+        
+        TweenService:Create(frame, tweenInfo, {
+            Position = targetPos
+        }):Play()
+    end
+
+    return {
+        Frame = frame,
+        SnapToGrid = function(gridSize) 
+            local newPos = snapToGrid(frame.Position, gridSize)
+            smoothMove(newPos)
+        end,
+        SetBoundary = function(min, max)
+            -- Implement boundary logic here
+        end
+    }
+end
+
+function Library:CreateKeyBinder()
+    local KeyBinder = {
+        Bindings = {},
+        Blacklist = {
+            [Enum.KeyCode.Unknown] = true,
+            [Enum.KeyCode.Backspace] = true,
+            [Enum.KeyCode.Return] = true
+        }
+    }
+
+    local UserInputService = game:GetService("UserInputService")
+    local GuiService = game:GetService("GuiService")
+
+    -- Create Keybind Frame
+    local keybindFrame = CreateElement("Frame", {
+        Size = UDim2.new(0, 300, 0, 400),
+        Position = UDim2.new(0.5, -150, 0.5, -200),
+        BackgroundColor3 = Library.Colors.Primary
+    })
+    AddCorner(keybindFrame)
+
+    -- Keybind Title
+    local titleLabel = CreateElement("TextLabel", {
+        Size = UDim2.new(1, 0, 0, 50),
+        BackgroundColor3 = Library.Colors.Secondary,
+        Text = "Key Bindings",
+        TextColor3 = Library.Colors.Text,
+        TextSize = 18,
+        Font = Library.Fonts.Bold
+    })
+    titleLabel.Parent = keybindFrame
+
+    -- Scrolling Frame for Bindings
+    local scrollFrame = CreateElement("ScrollingFrame", {
+        Size = UDim2.new(1, -20, 1, -100),
+        Position = UDim2.new(0, 10, 0, 60),
+        BackgroundTransparency = 1,
+        ScrollBarThickness = 5
+    })
+    scrollFrame.Parent = keybindFrame
+
+    -- Layout for Bindings
+    local bindingLayout = CreateElement("UIListLayout", {
+        Padding = UDim.new(0, 5),
+        SortOrder = Enum.SortOrder.LayoutOrder
+    })
+    bindingLayout.Parent = scrollFrame
+
+    function KeyBinder:AddBinding(name, defaultKey)
+        local binding = {
+            Name = name,
+            CurrentKey = defaultKey,
+            Callback = nil
+        }
+
+        local bindingFrame = CreateElement("Frame", {
+            Size = UDim2.new(1, 0, 0, 40),
+            BackgroundColor3 = Library.Colors.ElementBackground
+        })
+        AddCorner(bindingFrame)
+
+        local nameLabel = CreateElement("TextLabel", {
+            Size = UDim2.new(0.6, 0, 1, 0),
+            Position = UDim2.new(0, 10, 0, 0),
+            Text = name,
+            TextColor3 = Library.Colors.Text,
+            BackgroundTransparency = 1
+        })
+        nameLabel.Parent = bindingFrame
+
+        local keyButton = CreateElement("TextButton", {
+            Size = UDim2.new(0.3, 0, 1, 0),
+            Position = UDim2.new(0.7, 0, 0, 0),
+            Text = defaultKey and defaultKey.Name or "None",
+            BackgroundColor3 = Library.Colors.Accent
+        })
+        AddCorner(keyButton)
+        keyButton.Parent = bindingFrame
+
+        -- Key Binding Logic
+        keyButton.MouseButton1Click:Connect(function()
+            keyButton.Text = "Press any key..."
+            
+            local connection
+            connection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+                if not gameProcessed and not self.Blacklist[input.KeyCode] then
+                    binding.CurrentKey = input.KeyCode
+                    keyButton.Text = input.KeyCode.Name
+                    
+                    if connection then
+                        connection:Disconnect()
+                    end
+                end
+            end)
+        end)
+
+        function binding:SetCallback(func)
+            self.Callback = func
+        end
+
+        bindingFrame.Parent = scrollFrame
+        table.insert(self.Bindings, binding)
+
+        return binding
+    end
+
+    -- Global Key Handling
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        
+        for _, binding in ipairs(KeyBinder.Bindings) do
+            if input.KeyCode == binding.CurrentKey and binding.Callback then
+                binding.Callback()
+            end
+        end
+    end)
+
+    -- Save and Load Bindings
+    function KeyBinder:SaveBindings()
+        local savedBindings = {}
+        for _, binding in ipairs(self.Bindings) do
+            savedBindings[binding.Name] = binding.CurrentKey and binding.CurrentKey.Name or "None"
+        end
+        return savedBindings
+    end
+
+    function KeyBinder:LoadBindings(savedBindings)
+        for _, binding in ipairs(self.Bindings) do
+            local savedKey = savedBindings[binding.Name]
+            if savedKey and savedKey ~= "None" then
+                binding.CurrentKey = Enum.KeyCode[savedKey]
+            end
+        end
+    end
+
+    return KeyBinder
+end
+
+-- Usage Example
+local keyBinder = Library:CreateKeyBinder()
+
+local jumpBinding = keyBinder:AddBinding("Jump", Enum.KeyCode.Space)
+jumpBinding:SetCallback(function()
+    print("Jump Activated!")
+end)
+
+local sprintBinding = keyBinder:AddBinding("Sprint", Enum.KeyCode.LeftShift)
+sprintBinding:SetCallback(function()
+    print("Sprint Activated!")
+end)
+
+function Library:CreateThemeManager()
+    local ThemeManager = {
+        CurrentTheme = "Dark",
+        Themes = {
+            Dark = {
+                Primary = Color3.fromRGB(30, 30, 45),
+                Secondary = Color3.fromRGB(35, 35, 50),
+                Accent = Color3.fromRGB(100, 190, 255),
+                Text = Color3.fromRGB(255, 255, 255),
+                Shadow = Color3.fromRGB(0, 0, 0)
+            },
+            Light = {
+                Primary = Color3.fromRGB(240, 240, 250),
+                Secondary = Color3.fromRGB(220, 220, 230),
+                Accent = Color3.fromRGB(50, 100, 255),
+                Text = Color3.fromRGB(20, 20, 30),
+                Shadow = Color3.fromRGB(100, 100, 100)
+            },
+            Cyberpunk = {
+                Primary = Color3.fromRGB(20, 20, 30),
+                Secondary = Color3.fromRGB(40, 40, 60),
+                Accent = Color3.fromRGB(0, 255, 200),
+                Text = Color3.fromRGB(0, 255, 200),
+                Shadow = Color3.fromRGB(0, 100, 100)
+            }
+        },
+        AppliedElements = {}
+    }
+
+    function ThemeManager:CreateThemeSelector()
+        local selectorFrame = CreateElement("Frame", {
+            Size = UDim2.new(0, 200, 0, 300),
+            BackgroundColor3 = self.Themes.Dark.Primary
+        })
+        AddCorner(selectorFrame)
+
+        for themeName, themeColors in pairs(self.Themes) do
+            local themeButton = CreateElement("TextButton", {
+                Size = UDim2.new(1, -20, 0, 40),
+                Position = UDim2.new(0, 10, 0, #selectorFrame:GetChildren() * 50),
+                Text = themeName,
+                BackgroundColor3 = themeColors.Accent
+            })
+            AddCorner(themeButton)
+            themeButton.Parent = selectorFrame
+
+            themeButton.MouseButton1Click:Connect(function()
+                self:ApplyTheme(themeName)
+            end)
+        end
+
+        return selectorFrame
+    end
+
+    function ThemeManager:ApplyTheme(themeName)
+        local theme = self.Themes[themeName]
+        self.CurrentTheme = themeName
+
+        for _, element in ipairs(self.AppliedElements) do
+            if element.Type == "Frame" then
+                element.Object.BackgroundColor3 = theme.Primary
+            elseif element.Type == "Button" then
+                element.Object.BackgroundColor3 = theme.Accent
+            elseif element.Type == "Text" then
+                element.Object.TextColor3 = theme.Text
+            end
+
+            -- Shadow/Blur Effect
+            if element.Shadow then
+                element.Shadow.BackgroundColor3 = theme.Shadow
+                element.Shadow.BackgroundTransparency = 0.5
+            end
+        end
+    end
+
+    function ThemeManager:TrackElement(element, elementType, addShadow)
+        local shadowObj = nil
+        if addShadow then
+            shadowObj = AddShadow(element, 0.5)
+        end
+
+        table.insert(self.AppliedElements, {
+            Object = element,
+            Type = elementType,
+            Shadow = shadowObj
+        })
+
+        return element
+    end
+
+    return ThemeManager
+end
+
+-- Usage Example
+local themeManager = Library:CreateThemeManager()
+
+-- Create a themed window with shadow
+local window = Library:CreateWindow({Title = "Themed Window"})
+local themeSelector = themeManager:CreateThemeSelector()
+
+-- Track and theme elements
+local button = themeManager:TrackElement(
+    window:AddButton("Themed Button", function() end), 
+    "Button", 
+    true  -- Add shadow
+)
+
+function Library:CreateWindowScaler(window)
+    local ScaleManager = {
+        CurrentScale = 1,
+        ScaleSteps = {
+            {Name = "Tiny", Scale = 0.5},
+            {Name = "Normal", Scale = 1},
+            {Name = "Large", Scale = 1.5},
+            {Name = "Extra Large", Scale = 2}
+        }
+    }
+
+    function ScaleManager:CreateScaleSelector()
+        local selectorFrame = CreateElement("Frame", {
+            Size = UDim2.new(0, 200, 0, 200),
+            BackgroundColor3 = Library.Colors.Primary
+        })
+        AddCorner(selectorFrame)
+
+        for _, scaleOption in ipairs(self.ScaleSteps) do
+            local scaleButton = CreateElement("TextButton", {
+                Size = UDim2.new(1, -20, 0, 40),
+                Position = UDim2.new(0, 10, 0, (#selectorFrame:GetChildren() * 50)),
+                Text = scaleOption.Name,
+                BackgroundColor3 = Library.Colors.Accent
+            })
+            AddCorner(scaleButton)
+            scaleButton.Parent = selectorFrame
+
+            scaleButton.MouseButton1Click:Connect(function()
+                self:ScaleWindow(scaleOption.Scale)
+            end)
+        end
+
+        return selectorFrame
+    end
+
+    function ScaleManager:ScaleWindow(scale)
+        local mainContainer = window.MainContainer  -- Assume this exists in your window object
+        local originalSize = mainContainer.Size
+        local originalPosition = mainContainer.Position
+
+        local newSize = UDim2.new(
+            originalSize.X.Scale, 
+            originalSize.X.Offset * scale, 
+            originalSize.Y.Scale, 
+            originalSize.Y.Offset * scale
+        )
+
+        local newPosition = UDim2.new(
+            originalPosition.X.Scale, 
+            (game.Workspace.CurrentCamera.ViewportSize.X - newSize.X.Offset) / 2,
+            originalPosition.Y.Scale, 
+            (game.Workspace.CurrentCamera.ViewportSize.Y - newSize.Y.Offset) / 2
+        )
+
+        TweenService:Create(mainContainer, TweenInfo.new(0.3), {
+            Size = newSize,
+            Position = newPosition
+        }):Play()
+
+        self.CurrentScale = scale
+    end
+
+    return ScaleManager
+end
+
+-- Usage Example
+local window = Library:CreateWindow({Title = "Scalable Window"})
+local scaleManager = Library:CreateWindowScaler(window)
+local scaleSelector = scaleManager:CreateScaleSelector()
+
