@@ -2683,13 +2683,8 @@ function Library:CreateWindowScaler(window)
         }):Play()
 
         self.CurrentScale = scale
-    end
-
-    return ScaleManager
+   end
+   
+   return ScaleManager				-- hey you what are you doing?????🫤🤨🤨🤨
+   
 end
-
--- Usage Example
-local window = Library:CreateWindow({Title = "Scalable Window"})
-local scaleManager = Library:CreateWindowScaler(window)
-local scaleSelector = scaleManager:CreateScaleSelector()
-
