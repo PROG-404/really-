@@ -2688,3 +2688,198 @@ function Library:CreateWindowScaler(window)
    return ScaleManager				-- hey you what are you doing?????🫤🤨🤨🤨
    
 end
+
+-- Extend the Library with Multi-Window Support
+function Library:CreateMultiWindow(configs)
+    local windows = {}
+    local activeWindow = nil
+
+    -- Create multiple windows
+    for i, config in ipairs(configs) do
+        local window = {
+            Tabs = {},
+            ActiveTab = nil,
+            Elements = {},
+            Verified = false
+        }
+
+        -- Main Container
+        window.MainContainer = CreateElement("Frame", {
+            Name = "Window_" .. i,
+            Size = UDim2.new(0, 550, 0, 350),
+            Position = UDim2.new(0.5 + (i-1) * 0.1, -275, 0.5, -175),
+            BackgroundColor3 = Library.Colors.Primary,
+            BorderSizePixel = 0,
+            Visible = i == 1
+        })
+        AddCorner(window.MainContainer)
+        AddShadow(window.MainContainer)
+
+        -- Tab Container
+        local tabContainer = CreateElement("Frame", {
+            Size = UDim2.new(0, 150, 1, 0),
+            BackgroundColor3 = Library.Colors.Secondary
+        })
+        AddCorner(tabContainer)
+        tabContainer.Parent = window.MainContainer
+
+        -- Tab Content Container
+        local contentContainer = CreateElement("Frame", {
+            Size = UDim2.new(1, -160, 1, -10),
+            Position = UDim2.new(0, 155, 0, 5),
+            BackgroundColor3 = Library.Colors.Primary
+        })
+        AddCorner(contentContainer)
+        contentContainer.Parent = window.MainContainer
+
+        -- Add Tab functionality
+        function window:AddTab(tabName)
+            local tab = {
+                Name = tabName,
+                Elements = {},
+                Verified = false
+            }
+
+            local tabButton = CreateElement("TextButton", {
+                Size = UDim2.new(1, -10, 0, 40),
+                Position = UDim2.new(0, 5, 0, (#self.Tabs * 45)),
+                BackgroundColor3 = Library.Colors.ElementBackground,
+                Text = tabName,
+                TextColor3 = Library.Colors.Text
+            })
+            AddCorner(tabButton)
+            tabButton.Parent = tabContainer
+
+            local tabContent = CreateElement("ScrollingFrame", {
+                Size = UDim2.new(1, -10, 1, -10),
+                Position = UDim2.new(0, 5, 0, 5),
+                BackgroundTransparency = 1,
+                ScrollBarThickness = 4,
+                Visible = #self.Tabs == 0
+            })
+            tabContent.Parent = contentContainer
+
+            -- Add Toggle with verification
+            function tab:AddToggle(toggleConfig)
+                local toggle = {
+                    Value = false,
+                    Verified = false
+                }
+
+                local toggleFrame = CreateElement("Frame", {
+                    Size = UDim2.new(1, -10, 0, 40),
+                    Position = UDim2.new(0, 5, 0, (#tab.Elements * 45)),
+                    BackgroundColor3 = Library.Colors.ElementBackground
+                })
+                AddCorner(toggleFrame)
+
+                local toggleButton = CreateElement("TextButton", {
+                    Size = UDim2.new(0, 30, 0, 30),
+                    Position = UDim2.new(0, 5, 0.5, -15),
+                    BackgroundColor3 = Library.Colors.Accent,
+                    Text = ""
+                })
+                AddCorner(toggleButton)
+                toggleButton.Parent = toggleFrame
+
+                local toggleLabel = CreateElement("TextLabel", {
+                    Size = UDim2.new(1, -50, 1, 0),
+                    Position = UDim2.new(0, 45, 0, 0),
+                    BackgroundTransparency = 1,
+                    Text = toggleConfig.Text,
+                    TextColor3 = Library.Colors.Text,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+                toggleLabel.Parent = toggleFrame
+
+                local verifiedIcon = CreateElement("ImageLabel", {
+                    Size = UDim2.new(0, 20, 0, 20),
+                    Position = UDim2.new(1, -25, 0.5, -10),
+                    BackgroundTransparency = 1,
+                    Image = "rbxassetid://6031094667", -- Verified icon
+                    ImageTransparency = 1
+                })
+                verifiedIcon.Parent = toggleFrame
+
+                toggleButton.MouseButton1Click:Connect(function()
+                    toggle.Value = not toggle.Value
+                    toggleButton.BackgroundColor3 = toggle.Value and 
+                        Library.Colors.AccentDark or Library.Colors.Accent
+                    
+                    if toggleConfig.Callback then
+                        local success = toggleConfig.Callback(toggle.Value)
+                        if success then
+                            toggle.Verified = true
+                            TweenService:Create(verifiedIcon, 
+                                TweenInfo.new(0.3), 
+                                {ImageTransparency = 0}
+                            ):Play()
+                        end
+                    end
+                end)
+
+                toggleFrame.Parent = tabContent
+                table.insert(tab.Elements, toggle)
+                return toggle
+            end
+
+            -- Add Button with verification
+            function tab:AddButton(buttonConfig)
+                local button = {
+                    Verified = false
+                }
+
+                local buttonFrame = CreateElement("TextButton", {
+                    Size = UDim2.new(1, -10, 0, 40),
+                    Position = UDim2.new(0, 5, 0, (#tab.Elements * 45)),
+                    BackgroundColor3 = Library.Colors.ElementBackground,
+                    Text = buttonConfig.Text,
+                    TextColor3 = Library.Colors.Text
+                })
+                AddCorner(buttonFrame)
+
+                local verifiedIcon = CreateElement("ImageLabel", {
+                    Size = UDim2.new(0, 20, 0, 20),
+                    Position = UDim2.new(1, -25, 0.5, -10),
+                    BackgroundTransparency = 1,
+                    Image = "rbxassetid://6031094667",
+                    ImageTransparency = 1
+                })
+                verifiedIcon.Parent = buttonFrame
+
+                buttonFrame.MouseButton1Click:Connect(function()
+                    if buttonConfig.Callback then
+                        local success = buttonConfig.Callback()
+                        if success then
+                            button.Verified = true
+                            TweenService:Create(verifiedIcon, 
+                                TweenInfo.new(0.3), 
+                                {ImageTransparency = 0}
+                            ):Play()
+                        end
+                    end
+                end)
+
+                buttonFrame.Parent = tabContent
+                table.insert(tab.Elements, button)
+                return button
+            end
+
+            tabButton.MouseButton1Click:Connect(function()
+                if self.ActiveTab then
+                    self.ActiveTab.Content.Visible = false
+                end
+                tabContent.Visible = true
+                self.ActiveTab = {Content = tabContent}
+            end)
+
+            tab.Content = tabContent
+            table.insert(self.Tabs, tab)
+            return tab
+        end
+
+        windows[i] = window
+    end
+
+    return windows
+end
