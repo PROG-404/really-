@@ -2883,3 +2883,132 @@ function Library:CreateMultiWindow(configs)
 
     return windows
 end
+
+local JsonLibrary = {}
+
+-- تحقق من وجود مكتبة JSON
+local json = require("json") -- تأكد من تثبيت مكتبة JSON
+
+-- دالة لحفظ البيانات في ملف JSON
+function JsonLibrary.saveToJson(data, filename)
+    local file = io.open(filename, "w")
+    if file then
+        local jsonString = json.encode(data)
+        file:write(jsonString)
+        file:close()
+        return true
+    end
+    return false
+end
+
+-- دالة لتحميل البيانات من ملف JSON
+function JsonLibrary.loadFromJson(filename)
+    local file = io.open(filename, "r")
+    if file then
+        local content = file:read("*all")
+        file:close()
+        local data = json.decode(content)
+        return data
+    end
+    return nil
+end
+
+-- دالة للتحقق من وجود ملف
+function JsonLibrary.fileExists(filename)
+    local file = io.open(filename, "r")
+    if file then
+        file:close()
+        return true
+    end
+    return false
+end
+
+return JsonLibrary
+
+local ConfirmSystem = {}
+
+-- Confirmation dialog with toggle option
+function ConfirmSystem.createConfirmDialog(defaultToggle)
+    local dialog = {
+        rememberChoice = defaultToggle or false,
+        lastResponse = nil
+    }
+
+    function dialog:confirm(message, toggleMessage)
+        -- If remember choice is enabled and we have a previous response
+        if self.rememberChoice and self.lastResponse ~= nil then
+            return self.lastResponse
+        end
+
+        -- Display message and toggle option
+        print("\n" .. message)
+        if toggleMessage then
+            print("Don't ask again? (yes/no): ")
+            local toggleInput = io.read():lower()
+            self.rememberChoice = (toggleInput == "yes" or toggleInput == "y")
+        end
+
+        -- Get confirmation
+        print("Confirm? (yes/no): ")
+        local input = io.read():lower()
+        local isConfirmed = (input == "yes" or input == "y")
+        
+        -- Store response if remember choice is enabled
+        if self.rememberChoice then
+            self.lastResponse = isConfirmed
+        end
+
+        return isConfirmed
+    end
+
+    return dialog
+end
+
+-- Button with confirmation
+function ProgLip.createButton(label)
+    local button = {
+        label = label,
+        enabled = true,
+        requireConfirmation = true,
+        confirmMessage = "Are you sure you want to " .. label .. "?",
+    }
+
+    function button:press(callback)
+        if not self.enabled then
+            print("Button is disabled")
+            return false
+        end
+
+        if self.requireConfirmation then
+            print("\n" .. self.confirmMessage)
+            print("Confirm? (yes/no): ")
+            local input = io.read():lower()
+            
+            if input == "yes" or input == "y" then
+                if callback then callback() end
+                return true
+            else
+                print("Action cancelled")
+                return false
+            end
+        else
+            if callback then callback() end
+            return true
+        end
+    end
+
+    function button:setEnabled(state)
+        self.enabled = state
+    end
+
+    function button:setConfirmation(required, message)
+        self.requireConfirmation = required
+        if message then
+            self.confirmMessage = message
+        end
+    end
+
+    return button
+end
+
+return ProgLip 
