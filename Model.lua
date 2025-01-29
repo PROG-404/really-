@@ -8,16 +8,6 @@ Library.__index = Library
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
-local function Lerp(a, b, t)
-   return a + (b - a) * t
-end
-
-local function CreateTween(instance, props, duration)
-   local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-   local tween = TweenService:Create(instance, tweenInfo, props)
-   return tween
-end
-
 function Library.new()
    local self = setmetatable({
        windows = {},
@@ -42,6 +32,7 @@ function Library:CreateWindow(config)
            Foreground = Color3.fromRGB(30, 30, 30),
            Accent = Color3.fromRGB(0, 170, 255),
            Text = Color3.fromRGB(255, 255, 255),
+           TabSelected = Color3.fromRGB(0, 170, 255),
            Buttons = {
                Close = Color3.fromRGB(25, 25, 25),
                Minimize = Color3.fromRGB(25, 25, 25),
@@ -65,6 +56,7 @@ function Library:CreateWindow(config)
    mainCorner.CornerRadius = UDim.new(0, 8)
    mainCorner.Parent = mainWindow
 
+   -- Title Bar
    local titleBar = Instance.new("Frame")
    titleBar.Name = "TitleBar"
    titleBar.Size = UDim2.new(1, 0, 0, 30)
@@ -88,6 +80,7 @@ function Library:CreateWindow(config)
    titleText.TextXAlignment = Enum.TextXAlignment.Left
    titleText.Parent = titleBar
 
+   -- Control Buttons
    local controlButtons = Instance.new("Frame")
    controlButtons.Name = "ControlButtons"
    controlButtons.Size = UDim2.new(0, 90, 1, 0)
@@ -101,7 +94,6 @@ function Library:CreateWindow(config)
        button.Size = UDim2.new(0, 30, 0, 30)
        button.Position = position
        button.BackgroundColor3 = color
-       button.BackgroundTransparency = 0.1
        button.TextColor3 = window.Theme.Text
        button.TextSize = 14
        button.Font = Enum.Font.GothamBold
@@ -127,95 +119,7 @@ function Library:CreateWindow(config)
    contentFrame.Parent = mainWindow
    window.content = contentFrame
 
-   function window:CreateConfirmDialog()
-       local dimFrame = Instance.new("Frame")
-       dimFrame.Size = UDim2.new(1, 0, 1, 0)
-       dimFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-       dimFrame.BackgroundTransparency = 1
-       dimFrame.Parent = mainWindow
-
-       closeButton.AutoButtonColor = false
-       minimizeButton.AutoButtonColor = false
-       moveButton.AutoButtonColor = false
-
-       local blocker = Instance.new("TextButton")
-       blocker.Size = UDim2.new(1, 0, 1, 0)
-       blocker.BackgroundTransparency = 1
-       blocker.Text = ""
-       blocker.Parent = dimFrame
-
-       TweenService:Create(dimFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.5}):Play()
-       TweenService:Create(mainWindow, TweenInfo.new(0.3), {BackgroundTransparency = 0.4}):Play()
-
-       local confirmDialog = Instance.new("Frame")
-       confirmDialog.Name = "ConfirmDialog"
-       confirmDialog.Size = UDim2.new(0, 250, 0, 150)
-       confirmDialog.Position = UDim2.new(0.5, -125, 0.5, -75)
-       confirmDialog.BackgroundColor3 = window.Theme.Background
-       confirmDialog.BackgroundTransparency = 0
-       confirmDialog.BorderSizePixel = 0
-       confirmDialog.Parent = mainWindow
-
-       local dialogCorner = Instance.new("UICorner")
-       dialogCorner.CornerRadius = UDim.new(0, 8)
-       dialogCorner.Parent = confirmDialog
-
-       local messageText = Instance.new("TextLabel")
-       messageText.Size = UDim2.new(1, -20, 0, 60)
-       messageText.Position = UDim2.new(0, 10, 0, 20)
-       messageText.BackgroundTransparency = 1
-       messageText.TextColor3 = window.Theme.Text
-       messageText.TextSize = 16
-       messageText.Font = Enum.Font.GothamMedium
-       messageText.Text = "Are you sure you want to close this window?"
-       messageText.TextWrapped = true
-       messageText.Parent = confirmDialog
-
-       local function CreateConfirmButton(text, position, color)
-           local button = Instance.new("TextButton")
-           button.Size = UDim2.new(0.4, 0, 0, 35)
-           button.Position = position
-           button.BackgroundColor3 = color
-           button.TextColor3 = window.Theme.Text
-           button.TextSize = 14
-           button.Font = Enum.Font.GothamBold
-           button.Text = text
-           button.Parent = confirmDialog
-
-           local buttonCorner = Instance.new("UICorner")
-           buttonCorner.CornerRadius = UDim.new(0, 6)
-           buttonCorner.Parent = button
-
-           return button
-       end
-
-       local yesButton = CreateConfirmButton("Yes", UDim2.new(0.1, 0, 1, -50), Color3.fromRGB(255, 0, 0))
-       local noButton = CreateConfirmButton("No", UDim2.new(0.5, 0, 1, -50), Color3.fromRGB(0, 170, 0))
-
-       local function enableButtons()
-           closeButton.AutoButtonColor = true
-           minimizeButton.AutoButtonColor = true
-           moveButton.AutoButtonColor = true
-       end
-
-       yesButton.MouseButton1Click:Connect(function()
-           enableButtons()
-           TweenService:Create(mainWindow, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
-           task.wait(0.3)
-           mainWindow:Destroy()
-       end)
-
-       noButton.MouseButton1Click:Connect(function()
-           enableButtons()
-           TweenService:Create(dimFrame, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
-           TweenService:Create(mainWindow, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
-           TweenService:Create(confirmDialog, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
-           task.wait(0.3)
-           dimFrame:Destroy()
-           confirmDialog:Destroy()
-       end)
-   end
-
+   -- Window Controls
    local dragging = false
    local dragInput
    local dragStart
@@ -236,23 +140,10 @@ function Library:CreateWindow(config)
        end
    end)
 
-   local moveMode = false
-
-   moveButton.MouseButton1Click:Connect(function()
-       moveMode = not moveMode
-       if moveMode then
-           moveButton.BackgroundColor3 = window.Theme.Accent
-       else
-           moveButton.BackgroundColor3 = window.Theme.Buttons.Move
-       end
-   end)
-
    UserInputService.InputChanged:Connect(function(input)
        if input.UserInputType == Enum.UserInputType.MouseMovement then
+           dragInput = input
            if dragging then
-               updateDrag(input)
-           end
-           if moveMode and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
                updateDrag(input)
            end
        end
@@ -264,36 +155,114 @@ function Library:CreateWindow(config)
        end
    end)
 
-   closeButton.MouseButton1Click:Connect(function()
-       window:CreateConfirmDialog()
-   end)
+   -- Tab System
+   function window:CreateTabSystem()
+       local tabList = Instance.new("Frame")
+       tabList.Name = "TabList"
+       tabList.Size = UDim2.new(0, 150, 1, 0)
+       tabList.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+       tabList.BorderSizePixel = 0
+       tabList.Parent = contentFrame
 
-   local minimized = false
-   local originalSize = window.size
-   
-   minimizeButton.MouseButton1Click:Connect(function()
-       minimized = not minimized
-       local newSize = minimized and UDim2.new(window.size.X.Scale, window.size.X.Offset, 0, 30) or originalSize
-       CreateTween(mainWindow, {Size = newSize}, 0.3):Play()
-       minimizeButton.Text = minimized and "+" or "-"
-   end)
+       local contentArea = Instance.new("Frame")
+       contentArea.Name = "ContentArea"
+       contentArea.Size = UDim2.new(1, -150, 1, 0)
+       contentArea.Position = UDim2.new(0, 150, 0, 0)
+       contentArea.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+       contentArea.BorderSizePixel = 0
+       contentArea.Parent = contentFrame
 
-   table.insert(self.windows, window)
-   self.currentWindow = window
+       local tabs = {}
+       local selectedTab = nil
+
+       function window:AddTab(name, imageId)
+           local tabButton = Instance.new("Frame")
+           tabButton.Size = UDim2.new(1, 0, 0, 40)
+           tabButton.Position = UDim2.new(0, 0, 0, #tabs * 40)
+           tabButton.BackgroundTransparency = 1
+           tabButton.Parent = tabList
+
+           local icon = Instance.new("ImageLabel")
+           icon.Size = UDim2.new(0, 20, 0, 20)
+           icon.Position = UDim2.new(0, 10, 0.5, -10)
+           icon.BackgroundTransparency = 1
+           icon.Image = imageId or "rbxassetid://3926307971"
+           icon.Parent = tabButton
+
+           local text = Instance.new("TextLabel")
+           text.Size = UDim2.new(1, -40, 1, 0)
+           text.Position = UDim2.new(0, 40, 0, 0)
+           text.BackgroundTransparency = 1
+           text.Text = name
+           text.TextColor3 = window.Theme.Text
+           text.TextSize = 14
+           text.Font = Enum.Font.GothamMedium
+           text.TextXAlignment = Enum.TextXAlignment.Left
+           text.Parent = tabButton
+
+           local selectLine = Instance.new("Frame")
+           selectLine.Size = UDim2.new(1, 0, 0, 2)
+           selectLine.Position = UDim2.new(0, 0, 1, -2)
+           selectLine.BackgroundColor3 = window.Theme.TabSelected
+           selectLine.BorderSizePixel = 0
+           selectLine.Visible = false
+           selectLine.Parent = tabButton
+
+           local tabContent = Instance.new("Frame")
+           tabContent.Size = UDim2.new(1, 0, 1, 0)
+           tabContent.BackgroundTransparency = 1
+           tabContent.Visible = false
+           tabContent.Parent = contentArea
+
+           local button = Instance.new("TextButton")
+           button.Size = UDim2.new(1, 0, 1, 0)
+           button.BackgroundTransparency = 1
+           button.Text = ""
+           button.Parent = tabButton
+
+           local tab = {
+               button = button,
+               content = tabContent,
+               selectLine = selectLine
+           }
+
+           button.MouseButton1Click:Connect(function()
+               if selectedTab then
+                   selectedTab.content.Visible = false
+                   selectedTab.selectLine.Visible = false
+               end
+               selectedTab = tab
+               tab.content.Visible = true
+               tab.selectLine.Visible = true
+           end)
+
+           if #tabs == 0 then
+               selectedTab = tab
+               tab.content.Visible = true
+               tab.selectLine.Visible = true
+           end
+
+           table.insert(tabs, tab)
+           return tabContent
+       end
+
+       return window
+   end
 
    return window
 end
 
-function Library:AddButton(window, text, callback)
+-- Button Creation
+function Library:AddButton(container, text, callback)
    local button = Instance.new("TextButton")
    button.Size = UDim2.new(1, -20, 0, 35)
-   button.Position = UDim2.new(0, 10, 0, #window.content:GetChildren() * 45)
-   button.BackgroundColor3 = window.Theme.Buttons.Minimize
-   button.TextColor3 = window.Theme.Text
+   button.Position = UDim2.new(0, 10, 0, #container:GetChildren() * 45)
+   button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+   button.TextColor3 = Color3.fromRGB(255, 255, 255)
    button.TextSize = 14
    button.Font = Enum.Font.GothamMedium
    button.Text = text
-   button.Parent = window.content
+   button.Parent = container
 
    local buttonCorner = Instance.new("UICorner")
    buttonCorner.CornerRadius = UDim.new(0, 6)
