@@ -5,11 +5,9 @@ local Library = {
 }
 Library.__index = Library
 
--- Services
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
--- Utility Functions
 local function Lerp(a, b, t)
    return a + (b - a) * t
 end
@@ -20,7 +18,6 @@ local function CreateTween(instance, props, duration)
    return tween
 end
 
--- Main Library Constructor
 function Library.new()
    local self = setmetatable({
        windows = {},
@@ -34,15 +31,12 @@ function Library.new()
    return self
 end
 
--- Window Creation
 function Library:CreateWindow(config)
    config = config or {}
    local window = {
        title = config.title or "Window",
-       size = config.size or UDim2.new(0, 300, 0, 200),
-       position = config.position or UDim2.new(0.5, -150, 0.5, -100),
-       minSize = config.minSize or Vector2.new(200, 150),
-       maxSize = config.maxSize or Vector2.new(800, 600),
+       size = config.size or UDim2.new(0, 500, 0, 350),
+       position = config.position or UDim2.new(0.5, -250, 0.5, -175),
        Theme = {
            Background = Color3.fromRGB(25, 25, 25),
            Foreground = Color3.fromRGB(30, 30, 30),
@@ -50,12 +44,12 @@ function Library:CreateWindow(config)
            Text = Color3.fromRGB(255, 255, 255),
            Buttons = {
                Close = Color3.fromRGB(25, 25, 25),
-               Minimize = Color3.fromRGB(25, 25, 25)
+               Minimize = Color3.fromRGB(25, 25, 25),
+               Move = Color3.fromRGB(25, 25, 25)
            }
        }
    }
 
-   -- Main Window Frame
    local mainWindow = Instance.new("Frame")
    mainWindow.Name = "MainWindow"
    mainWindow.Size = window.size
@@ -71,7 +65,6 @@ function Library:CreateWindow(config)
    mainCorner.CornerRadius = UDim.new(0, 8)
    mainCorner.Parent = mainWindow
 
-   -- Title Bar
    local titleBar = Instance.new("Frame")
    titleBar.Name = "TitleBar"
    titleBar.Size = UDim2.new(1, 0, 0, 30)
@@ -84,7 +77,6 @@ function Library:CreateWindow(config)
    titleCorner.CornerRadius = UDim.new(0, 8)
    titleCorner.Parent = titleBar
 
-   -- Title Text
    local titleText = Instance.new("TextLabel")
    titleText.Size = UDim2.new(1, -60, 1, 0)
    titleText.Position = UDim2.new(0, 10, 0, 0)
@@ -96,16 +88,14 @@ function Library:CreateWindow(config)
    titleText.TextXAlignment = Enum.TextXAlignment.Left
    titleText.Parent = titleBar
 
-   -- Control Buttons Container
    local controlButtons = Instance.new("Frame")
    controlButtons.Name = "ControlButtons"
-   controlButtons.Size = UDim2.new(0, 60, 1, 0)
-   controlButtons.Position = UDim2.new(1, -60, 0, 0)
+   controlButtons.Size = UDim2.new(0, 90, 1, 0)
+   controlButtons.Position = UDim2.new(1, -90, 0, 0)
    controlButtons.BackgroundTransparency = 1
    controlButtons.Parent = titleBar
 
-   -- Create Button Function
-   local function CreateButton(name, position, color)
+   local function CreateButton(name, position, color, text)
        local button = Instance.new("TextButton")
        button.Name = name
        button.Size = UDim2.new(0, 30, 0, 30)
@@ -115,6 +105,7 @@ function Library:CreateWindow(config)
        button.TextColor3 = window.Theme.Text
        button.TextSize = 14
        button.Font = Enum.Font.GothamBold
+       button.Text = text
        button.Parent = controlButtons
 
        local buttonCorner = Instance.new("UICorner")
@@ -124,14 +115,10 @@ function Library:CreateWindow(config)
        return button
    end
 
-   -- Close and Minimize Buttons
-   local closeButton = CreateButton("Close", UDim2.new(1, -30, 0, 0), window.Theme.Buttons.Close)
-   closeButton.Text = "X"
-   
-   local minimizeButton = CreateButton("Minimize", UDim2.new(0, 0, 0, 0), window.Theme.Buttons.Minimize)
-   minimizeButton.Text = "-"
+   local moveButton = CreateButton("Move", UDim2.new(0, 0, 0, 0), window.Theme.Buttons.Move, "%")
+   local minimizeButton = CreateButton("Minimize", UDim2.new(0.5, -15, 0, 0), window.Theme.Buttons.Minimize, "-")
+   local closeButton = CreateButton("Close", UDim2.new(1, -30, 0, 0), window.Theme.Buttons.Close, "X")
 
-   -- Content Container
    local contentFrame = Instance.new("Frame")
    contentFrame.Name = "Content"
    contentFrame.Size = UDim2.new(1, 0, 1, -30)
@@ -140,13 +127,22 @@ function Library:CreateWindow(config)
    contentFrame.Parent = mainWindow
    window.content = contentFrame
 
-   -- Confirmation Dialog
    function window:CreateConfirmDialog()
        local dimFrame = Instance.new("Frame")
        dimFrame.Size = UDim2.new(1, 0, 1, 0)
        dimFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
        dimFrame.BackgroundTransparency = 1
        dimFrame.Parent = mainWindow
+
+       closeButton.AutoButtonColor = false
+       minimizeButton.AutoButtonColor = false
+       moveButton.AutoButtonColor = false
+
+       local blocker = Instance.new("TextButton")
+       blocker.Size = UDim2.new(1, 0, 1, 0)
+       blocker.BackgroundTransparency = 1
+       blocker.Text = ""
+       blocker.Parent = dimFrame
 
        TweenService:Create(dimFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.5}):Play()
        TweenService:Create(mainWindow, TweenInfo.new(0.3), {BackgroundTransparency = 0.4}):Play()
@@ -196,13 +192,21 @@ function Library:CreateWindow(config)
        local yesButton = CreateConfirmButton("Yes", UDim2.new(0.1, 0, 1, -50), Color3.fromRGB(255, 0, 0))
        local noButton = CreateConfirmButton("No", UDim2.new(0.5, 0, 1, -50), Color3.fromRGB(0, 170, 0))
 
+       local function enableButtons()
+           closeButton.AutoButtonColor = true
+           minimizeButton.AutoButtonColor = true
+           moveButton.AutoButtonColor = true
+       end
+
        yesButton.MouseButton1Click:Connect(function()
+           enableButtons()
            TweenService:Create(mainWindow, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
            task.wait(0.3)
            mainWindow:Destroy()
        end)
 
        noButton.MouseButton1Click:Connect(function()
+           enableButtons()
            TweenService:Create(dimFrame, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
            TweenService:Create(mainWindow, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
            TweenService:Create(confirmDialog, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
@@ -212,10 +216,17 @@ function Library:CreateWindow(config)
        end)
    end
 
-   -- Window Dragging
    local dragging = false
-   local dragStart = nil
-   local startPos = nil
+   local dragInput
+   local dragStart
+   local startPos
+
+   local function updateDrag(input)
+       if dragging then
+           local delta = input.Position - dragStart
+           mainWindow.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+       end
+   end
 
    titleBar.InputBegan:Connect(function(input)
        if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -225,15 +236,25 @@ function Library:CreateWindow(config)
        end
    end)
 
+   local moveMode = false
+
+   moveButton.MouseButton1Click:Connect(function()
+       moveMode = not moveMode
+       if moveMode then
+           moveButton.BackgroundColor3 = window.Theme.Accent
+       else
+           moveButton.BackgroundColor3 = window.Theme.Buttons.Move
+       end
+   end)
+
    UserInputService.InputChanged:Connect(function(input)
-       if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-           local delta = input.Position - dragStart
-           mainWindow.Position = UDim2.new(
-               startPos.X.Scale,
-               startPos.X.Offset + delta.X,
-               startPos.Y.Scale,
-               startPos.Y.Offset + delta.Y
-           )
+       if input.UserInputType == Enum.UserInputType.MouseMovement then
+           if dragging then
+               updateDrag(input)
+           end
+           if moveMode and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
+               updateDrag(input)
+           end
        end
    end)
 
@@ -243,34 +264,6 @@ function Library:CreateWindow(config)
        end
    end)
 
-   -- Window Resizing
-   local resizing = false
-   local resizeType = nil
-   local RESIZE_MARGIN = 5
-
-   mainWindow.MouseMoved:Connect(function(x, y)
-       if dragging or resizing then return end
-       
-       local abs = mainWindow.AbsolutePosition
-       local size = mainWindow.AbsoluteSize
-       local relX, relY = x - abs.X, y - abs.Y
-       local onLeft = relX <= RESIZE_MARGIN
-       local onRight = relX >= size.X - RESIZE_MARGIN
-       local onTop = relY <= RESIZE_MARGIN
-       local onBottom = relY >= size.Y - RESIZE_MARGIN
-
-       if (onLeft or onRight) and (onTop or onBottom) then
-           mainWindow.MouseIcon = (onLeft and onTop) or (onRight and onBottom) and "rbxasset://SystemCursors/SizeNWSE" or "rbxasset://SystemCursors/SizeNESW"
-       elseif onLeft or onRight then
-           mainWindow.MouseIcon = "rbxasset://SystemCursors/SizeWE"
-       elseif onTop or onBottom then
-           mainWindow.MouseIcon = "rbxasset://SystemCursors/SizeNS"
-       else
-           mainWindow.MouseIcon = ""
-       end
-   end)
-
-   -- Button Functions
    closeButton.MouseButton1Click:Connect(function()
        window:CreateConfirmDialog()
    end)
@@ -285,14 +278,12 @@ function Library:CreateWindow(config)
        minimizeButton.Text = minimized and "+" or "-"
    end)
 
-   -- Add window to library's window list
    table.insert(self.windows, window)
    self.currentWindow = window
 
    return window
 end
 
--- Add Elements Functions
 function Library:AddButton(window, text, callback)
    local button = Instance.new("TextButton")
    button.Size = UDim2.new(1, -20, 0, 35)
