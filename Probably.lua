@@ -308,3 +308,19 @@ function Library:AddButton(window, text, callback)
 end
 
 return Library
+
+-- إضافة الخط الفاصل في دالة CreateWindow
+local separatorLine = Instance.new("Frame")
+separatorLine.Name = "SeparatorLine"
+separatorLine.Size = UDim2.new(1, 0, 0, 1)
+separatorLine.Position = UDim2.new(0, 0, 0, 30) -- تحت شريط العنوان مباشرة
+separatorLine.BackgroundColor3 = window.theme.accent -- لون الخط
+separatorLine.BorderSizePixel = 0
+separatorLine.Parent = mainWindow
+
+-- إضافة تحديث حجم الخط عند تغيير حجم النافذة
+local function updateSeparatorSize()
+    separatorLine.Size = UDim2.new(1, 0, 0, 1)
+end
+
+mainWindow:GetPropertyChangedSignal("Size"):Connect(updateSeparatorSize)
