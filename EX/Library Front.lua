@@ -1,7 +1,21 @@
-local FrontLip = loadstring(game:HttpGet("https://raw.githubusercontent.com/PROG-404/really-/refs/heads/main/Model.lua"))()
+-- Get the library
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PROG-404/really-/refs/heads/main/Model.lua"))()
 
-local gui = FrontLip.new()
+-- Create a new instance of the library
+local UI = Library.new()
 
-local window = gui:CreateWindow({
-    title = "FRONT"
+-- Create a window
+local Window = UI:CreateWindow({
+    title = "My Cool GUI",
+    size = UDim2.new(0, 500, 0, 350),
 })
+
+-- Create tabs
+local MainTab = Tabs:AddTab("Main", "rbxassetid://3926307971")
+local SettingsTab = Tabs:AddTab("Settings", "rbxassetid://3926307971")
+
+
+-- Add buttons to Main tab
+Library:AddButton(MainTab, "Click Me!", function()
+    print("Button clicked!")
+end)
