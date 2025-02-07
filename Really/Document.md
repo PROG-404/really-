@@ -1,4 +1,4 @@
-# Library redzV5 for PORG
+ Library redzV5 for PORG
 
 ```lua
 local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/realredz/RedzLibV5/refs/heads/main/Source.lua"))()
@@ -128,7 +128,7 @@ local window1 = redzlib:MakeWindow({
 
 local window2 = redzlib:MakeWindow({
     Name = "Name Window 2", 
-    SubTitle = window 2"
+    SubTitle = "window 2"
 })
 ```
 # add 2 tab
