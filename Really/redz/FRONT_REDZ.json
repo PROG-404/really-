@@ -1,0 +1,67 @@
+{
+  "ScriptInfo": {
+    "Name": "Brookhaven Script",
+    "Author": "FRONT DARK",
+    "Version": "1.0.0",
+    "SupportedGame": 4924922222,
+    "LibraryURL": "https://raw.githubusercontent.com/realredz/RedzLibV5/main/Source.lua"
+  },
+  "UI": {
+    "Window": {
+      "Title": "Brookhaven",
+      "SubTitle": "by FRONT DARK",
+      "SaveFolder": "FRONT.js",
+      "Resizable": true
+    },
+    "Tabs": [
+      {
+        "Name": "Discord",
+        "Icon": "rbxassetid://10709811261",
+        "Invite": "https://discord.gg/vr7"
+      },
+      {
+        "Name": "Main",
+        "Icon": "rbxassetid://10709811261",
+        "Sections": [
+          {
+            "Name": "UI size",
+            "Dropdown": {
+              "Options": ["Small", "Very Small", "Medium", "Large", "Very Large"],
+              "Default": "Medium"
+            }
+          },
+          {
+            "Name": "Fly",
+            "Button": {
+              "Name": "Enable Fly Script",
+              "ScriptURL": "https://raw.githubusercontent.com/mikeexc/Dsc-Mike-Fly-Gui/main/Fly%20Gui.lua"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "Settings": {
+    "Graphics": {
+      "Fog": false,
+      "Brightness": 3,
+      "Shadows": false,
+      "FrameRate": 60,
+      "VSync": true
+    },
+    "Player": {
+      "Speed": 16,
+      "JumpPower": 50,
+      "WallHack": false,
+      "Invisibility": false,
+      "GodMode": false
+    }
+  },
+  "Teleport": {
+    "Homes": {
+      "House 1": {"Position": [100, 5, 200], "Name": "Modern Villa"},
+      "House 2": {"Position": [300, 5, 400], "Name": "Luxury Apartment"},
+      "House 3": {"Position": [500, 5, 600], "Name": "Classic Mansion"}
+    }
+  }
+}
