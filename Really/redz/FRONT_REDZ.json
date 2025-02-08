@@ -1,67 +1,145 @@
 {
-  "ScriptInfo": {
-    "Name": "Brookhaven Script",
-    "Author": "FRONT DARK",
-    "Version": "1.0.0",
-    "SupportedGame": 4924922222,
-    "LibraryURL": "https://raw.githubusercontent.com/realredz/RedzLibV5/main/Source.lua"
-  },
-  "UI": {
-    "Window": {
-      "Title": "Brookhaven",
-      "SubTitle": "by FRONT DARK",
-      "SaveFolder": "FRONT.js",
-      "Resizable": true
-    },
-    "Tabs": [
-      {
-        "Name": "Discord",
-        "Icon": "rbxassetid://10709811261",
-        "Invite": "https://discord.gg/vr7"
+  "brookhavenFeatures": {
+    "name": "Brookhaven Controller",
+    "version": "2.0.0",
+    "gameId": 4924922222,
+    "gameFeatures": {
+      "vehicles": {
+        "enabled": true,
+        "autoUnlock": true,
+        "speedMultiplier": 2.5,
+        "noCollision": true,
+        "vehicleCommands": {
+          "spawn": "/car",
+          "delete": "/deletecar",
+          "customize": "/customcar"
+        }
       },
-      {
-        "Name": "Main",
-        "Icon": "rbxassetid://10709811261",
-        "Sections": [
-          {
-            "Name": "UI size",
-            "Dropdown": {
-              "Options": ["Small", "Very Small", "Medium", "Large", "Very Large"],
-              "Default": "Medium"
-            }
-          },
-          {
-            "Name": "Fly",
-            "Button": {
-              "Name": "Enable Fly Script",
-              "ScriptURL": "https://raw.githubusercontent.com/mikeexc/Dsc-Mike-Fly-Gui/main/Fly%20Gui.lua"
-            }
+      "housing": {
+        "enabled": true,
+        "autoUnlock": true,
+        "houseCommands": {
+          "enter": "/enter",
+          "leave": "/leave",
+          "build": "/build",
+          "edit": "/edit"
+        },
+        "buildingFeatures": {
+          "unlimitedItems": true,
+          "noPlacementRestrictions": true,
+          "instantBuild": true
+        }
+      },
+      "roleplay": {
+        "jobs": {
+          "autoPaycheck": true,
+          "instantPromotion": true,
+          "jobCommands": {
+            "police": "/job police",
+            "doctor": "/job doctor",
+            "teacher": "/job teacher"
           }
-        ]
+        },
+        "animations": {
+          "enabled": true,
+          "customEmotes": true,
+          "danceUnlock": true
+        }
+      },
+      "character": {
+        "appearance": {
+          "unlockAll": true,
+          "saveOutfits": true,
+          "clothingCommands": {
+            "wear": "/wear",
+            "remove": "/remove"
+          }
+        },
+        "movement": {
+          "speedBoost": true,
+          "jumpBoost": true,
+          "noClip": true,
+          "autoSprint": true
+        }
+      },
+      "economy": {
+        "moneyFeatures": {
+          "autoIncome": true,
+          "incomeAmount": 1000,
+          "incomeInterval": 60,
+          "bankAccess": true
+        },
+        "trading": {
+          "enabled": true,
+          "autoAccept": false,
+          "tradeCommands": {
+            "send": "/trade",
+            "accept": "/accept",
+            "decline": "/decline"
+          }
+        }
+      },
+      "social": {
+        "chat": {
+          "enabled": true,
+          "filterBypass": true,
+          "autoRespond": false,
+          "chatCommands": {
+            "whisper": "/w",
+            "party": "/p",
+            "global": "/g"
+          }
+        },
+        "friends": {
+          "autoAccept": false,
+          "notifyOnline": true
+        }
+      },
+      "utilities": {
+        "teleport": {
+          "enabled": true,
+          "locations": {
+            "spawn": {"x": 0, "y": 5, "z": 0},
+            "hospital": {"x": -100, "y": 5, "z": -100},
+            "school": {"x": 100, "y": 5, "z": 100},
+            "police": {"x": 200, "y": 5, "z": 200},
+            "bank": {"x": -200, "y": 5, "z": -200}
+          }
+        },
+        "commands": {
+          "prefix": "/",
+          "customCommands": {
+            "reset": "reset",
+            "home": "home",
+            "shop": "shop"
+          }
+        }
+      },
+      "protection": {
+        "antiMod": true,
+        "antiKick": true,
+        "antiBan": true,
+        "antiReport": true,
+        "safeMode": true
       }
-    ]
-  },
-  "Settings": {
-    "Graphics": {
-      "Fog": false,
-      "Brightness": 3,
-      "Shadows": false,
-      "FrameRate": 60,
-      "VSync": true
     },
-    "Player": {
-      "Speed": 16,
-      "JumpPower": 50,
-      "WallHack": false,
-      "Invisibility": false,
-      "GodMode": false
-    }
-  },
-  "Teleport": {
-    "Homes": {
-      "House 1": {"Position": [100, 5, 200], "Name": "Modern Villa"},
-      "House 2": {"Position": [300, 5, 400], "Name": "Luxury Apartment"},
-      "House 3": {"Position": [500, 5, 600], "Name": "Classic Mansion"}
+    "settings": {
+      "performance": {
+        "lowGraphics": false,
+        "reduceLag": true,
+        "optimizeFrames": true
+      },
+      "interface": {
+        "showGUI": true,
+        "notifications": true,
+        "transparentUI": false,
+        "hotkeys": {
+          "toggleFly": "F",
+          "toggleNoclip": "V",
+          "toggleSpeed": "X",
+          "resetCharacter": "R"
+        }
+      }
     }
   }
 }
