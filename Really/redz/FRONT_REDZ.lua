@@ -1,3 +1,49 @@
+local config = {
+    loadSettings = function()
+        local success, result = pcall(function()
+            return game:GetService("HttpService"):JSONDecode(readfile("FRONT_REDZ.json"))
+        end)
+        return success and result or nil
+    end,
+    
+    initializeFeatures = function(settings)
+        -- Vehicle Features
+        if settings.gameFeatures.vehicles.enabled then
+            game:GetService("ReplicatedStorage").CarSystem.Enable.Value = true
+            game:GetService("ReplicatedStorage").CarSystem.Speed.Value *= settings.gameFeatures.vehicles.speedMultiplier
+        end
+        
+        -- Housing Features
+        if settings.gameFeatures.housing.enabled then
+            for _, item in pairs(game:GetService("ReplicatedStorage").Housing:GetChildren()) do
+                item.Locked.Value = false
+            end
+        end
+        
+        -- Character Features
+        if settings.gameFeatures.character.movement.speedBoost then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 32
+        end
+        
+        -- Economy Features
+        if settings.gameFeatures.economy.moneyFeatures.autoIncome then
+            spawn(function()
+                while wait(settings.gameFeatures.economy.moneyFeatures.incomeInterval) do
+                    game:GetService("ReplicatedStorage").MoneySystem.AddMoney:FireServer(
+                        settings.gameFeatures.economy.moneyFeatures.incomeAmount
+                    )
+                end
+            end)
+        end
+    end
+}
+
+local settings = config.loadSettings()
+if settings then
+    config.initializeFeatures(settings)
+end
+
+
 local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/realredz/RedzLibV5/refs/heads/main/Source.lua"))()
 
 -- Services
