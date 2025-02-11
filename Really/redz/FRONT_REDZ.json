@@ -1,145 +1,157 @@
 {
-  "brookhavenFeatures": {
-    "name": "Brookhaven Controller",
-    "version": "2.0.0",
-    "gameId": 4924922222,
-    "gameFeatures": {
-      "vehicles": {
-        "enabled": true,
-        "autoUnlock": true,
-        "speedMultiplier": 2.5,
-        "noCollision": true,
-        "vehicleCommands": {
-          "spawn": "/car",
-          "delete": "/deletecar",
-          "customize": "/customcar"
-        }
-      },
-      "housing": {
-        "enabled": true,
-        "autoUnlock": true,
-        "houseCommands": {
-          "enter": "/enter",
-          "leave": "/leave",
-          "build": "/build",
-          "edit": "/edit"
+    "scriptSettings": {
+        "version": "1.0.0",
+        "author": "FRONT DARK",
+        "name": "Brookhaven Script+",
+        "autoUpdate": true,
+        "debugMode": false
+    },
+    "uiSettings": {
+        "defaultSize": "Small",
+        "transparency": 0.8,
+        "theme": {
+            "primary": "#FFFFFF",
+            "secondary": "#000000",
+            "accent": "#FF0000",
+            "background": "#1A1A1A",
+            "text": "#FFFFFF",
+            "button": "#2D2D2D",
+            "hover": "#3D3D3D"
         },
-        "buildingFeatures": {
-          "unlimitedItems": true,
-          "noPlacementRestrictions": true,
-          "instantBuild": true
+        "fonts": {
+            "main": "Gotham",
+            "secondary": "Arial",
+            "size": 14
         }
-      },
-      "roleplay": {
-        "jobs": {
-          "autoPaycheck": true,
-          "instantPromotion": true,
-          "jobCommands": {
-            "police": "/job police",
-            "doctor": "/job doctor",
-            "teacher": "/job teacher"
-          }
+    },
+    "features": {
+        "teleport": {
+            "enabled": true,
+            "safeMode": true,
+            "cooldown": 1.5,
+            "maxDistance": 1000,
+            "blacklistedAreas": [],
+            "customLocations": {
+                "spawn": {"x": 0, "y": 0, "z": 0},
+                "shop": {"x": 100, "y": 0, "z": 100}
+            }
         },
-        "animations": {
-          "enabled": true,
-          "customEmotes": true,
-          "danceUnlock": true
-        }
-      },
-      "character": {
-        "appearance": {
-          "unlockAll": true,
-          "saveOutfits": true,
-          "clothingCommands": {
-            "wear": "/wear",
-            "remove": "/remove"
-          }
+        "player": {
+            "defaultWalkSpeed": 16,
+            "defaultJumpPower": 50,
+            "maxWalkSpeed": 100,
+            "maxJumpPower": 200,
+            "animations": {
+                "ninja": {
+                    "idle": "http://www.roblox.com/asset/?id=656117400",
+                    "walk": "http://www.roblox.com/asset/?id=656121766",
+                    "run": "http://www.roblox.com/asset/?id=656118852",
+                    "jump": "http://www.roblox.com/asset/?id=656117878",
+                    "fall": "http://www.roblox.com/asset/?id=656115606"
+                },
+                "zombie": {
+                    "idle": "http://www.roblox.com/asset/?id=616158929",
+                    "walk": "http://www.roblox.com/asset/?id=616168032",
+                    "run": "http://www.roblox.com/asset/?id=616163682",
+                    "jump": "http://www.roblox.com/asset/?id=616161997",
+                    "fall": "http://www.roblox.com/asset/?id=616157476"
+                }
+            },
+            "characterCustomization": {
+                "allowScaling": true,
+                "minScale": 0.5,
+                "maxScale": 3,
+                "defaultScale": 1
+            }
+        },
+        "visuals": {
+            "noFog": {
+                "enabled": true,
+                "brightness": 2,
+                "contrast": 1,
+                "saturation": 1
+            },
+            "effects": {
+                "rainbow": false,
+                "trail": false,
+                "particles": false,
+                "glow": false
+            },
+            "lighting": {
+                "time": 14,
+                "ambient": "#FFFFFF",
+                "brightness": 2,
+                "shadowSoftness": 0
+            }
         },
         "movement": {
-          "speedBoost": true,
-          "jumpBoost": true,
-          "noClip": true,
-          "autoSprint": true
-        }
-      },
-      "economy": {
-        "moneyFeatures": {
-          "autoIncome": true,
-          "incomeAmount": 1000,
-          "incomeInterval": 60,
-          "bankAccess": true
+            "bunnyHop": false,
+            "airWalk": false,
+            "waterWalk": false,
+            "speedMultiplier": 1,
+            "jumpMultiplier": 1
         },
-        "trading": {
-          "enabled": true,
-          "autoAccept": false,
-          "tradeCommands": {
-            "send": "/trade",
-            "accept": "/accept",
-            "decline": "/decline"
-          }
+        "protection": {
+            "antiRagdoll": false,
+            "antiAFK": false,
+            "safeMode": true,
+            "autoReset": {
+                "enabled": false,
+                "healthThreshold": 15
+            }
         }
-      },
-      "social": {
-        "chat": {
-          "enabled": true,
-          "filterBypass": true,
-          "autoRespond": false,
-          "chatCommands": {
-            "whisper": "/w",
-            "party": "/p",
-            "global": "/g"
-          }
-        },
-        "friends": {
-          "autoAccept": false,
-          "notifyOnline": true
-        }
-      },
-      "utilities": {
-        "teleport": {
-          "enabled": true,
-          "locations": {
-            "spawn": {"x": 0, "y": 5, "z": 0},
-            "hospital": {"x": -100, "y": 5, "z": -100},
-            "school": {"x": 100, "y": 5, "z": 100},
-            "police": {"x": 200, "y": 5, "z": 200},
-            "bank": {"x": -200, "y": 5, "z": -200}
-          }
-        },
-        "commands": {
-          "prefix": "/",
-          "customCommands": {
-            "reset": "reset",
-            "home": "home",
-            "shop": "shop"
-          }
-        }
-      },
-      "protection": {
-        "antiMod": true,
-        "antiKick": true,
-        "antiBan": true,
-        "antiReport": true,
-        "safeMode": true
-      }
     },
-    "settings": {
-      "performance": {
-        "lowGraphics": false,
-        "reduceLag": true,
-        "optimizeFrames": true
-      },
-      "interface": {
-        "showGUI": true,
-        "notifications": true,
-        "transparentUI": false,
-        "hotkeys": {
-          "toggleFly": "F",
-          "toggleNoclip": "V",
-          "toggleSpeed": "X",
-          "resetCharacter": "R"
+    "keyBinds": {
+        "toggleUI": "RightControl",
+        "teleport": "T",
+        "sprint": "LeftShift",
+        "jump": "Space",
+        "reset": "R",
+        "custom": {
+            "rainbowEffect": "J",
+            "ghostMode": "G"
         }
-      }
+    },
+    "notifications": {
+        "enabled": true,
+        "duration": 2,
+        "position": "TopRight",
+        "sound": true,
+        "volume": 0.5,
+        "types": {
+            "success": {
+                "color": "#00FF00",
+                "duration": 2
+            },
+            "error": {
+                "color": "#FF0000",
+                "duration": 3
+            },
+            "warning": {
+                "color": "#FFFF00",
+                "duration": 2.5
+            }
+        }
+    },
+    "permissions": {
+        "allowTeleport": true,
+        "allowSpeedChange": true,
+        "allowJumpChange": true,
+        "allowCharacterCustomization": true,
+        "allowVisualChanges": true,
+        "allowKeybindChanges": true
+    },
+    "performance": {
+        "maxFPS": 60,
+        "renderDistance": 1000,
+        "quality": "High",
+        "antiAliasing": true,
+        "shadows": true
+    },
+    "debug": {
+        "logLevel": "INFO",
+        "showFPS": false,
+        "showPing": false,
+        "consoleOutput": false
     }
-  }
 }
