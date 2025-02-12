@@ -6,6 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 --Varibals 
 local player = Players.LocalPlayer
 
+
 -- import library redz 
 local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/RedzLib/main/Source.lua"))()
 
@@ -25,7 +26,7 @@ local discordTab = window:MakeTab({
 discordTab:AddDiscordInvite({
    Name = "Join Our Discord",
    Logo = "rbxassetid://12650480175",
-   Invite = "https://discord.gg/vr7"
+   Invite = "https://discord.gg/YM7b2E3m"
 })
 
 -- Main Tab
@@ -47,7 +48,7 @@ mainTab:AddDropdown({
        local scales = {
            Small = 0.8,
            ["Very Small"] = 0.6,
-           Large = 1.2,
+           ["Large"] = 1.2,
            ["Very Large"] = 1.5
        }
        updateScriptUIScale(scales[Value])
@@ -62,8 +63,9 @@ mainTab:AddDropdown({
        local scales = {
            Small = 0.8,
            ["Very Small"] = 0.6,
-           Large = 1.2,
-           ["Very Large"] = 1.5
+           ["Large"] = 1.2,
+           ["Very Large"] = 1.5,
+           
        }
        updateGameUIScale(scales[Value])
    end
@@ -843,12 +845,21 @@ teleportTab:AddToggle({
 updatePlayerDropdown()
 
 -- Player Join/Leave Handler
+
+-- Join
 Players.PlayerAdded:Connect(function()
    updatePlayerDropdown()
 end)
 
+--leave
 Players.PlayerRemoving:Connect(function()
    updatePlayerDropdown()
 end)
 
-
+-- closed the Gui-ui and save setting 
+game:GetService("CoreGui").ChildRemoved:Connect(function(child)
+    if child.Name == "Brookhaven Script" then
+        SaveSettings()
+        print("The script has been closed")
+    end
+end)
