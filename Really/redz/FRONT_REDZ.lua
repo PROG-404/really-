@@ -1,6 +1,6 @@
 -- Window Creation
 local window = redzlib:MakeWindow({
-   Name = "Brookhaven Script+",
+   Name = "Brookhaven Script",
    SubTitle = "by FRONT DARK Enhanced",
    SaveFolder = "FRONT_REDZ.js"
 })
@@ -8,19 +8,19 @@ local window = redzlib:MakeWindow({
 -- Discord Tab
 local discordTab = window:MakeTab({
    Name = "Discord",
-   Icon = "rbxassetid://10709811261"
+   Icon = "rbxassetid://17312462878"
 })
 
 discordTab:AddDiscordInvite({
    Name = "Join Our Discord",
-   Logo = "rbxassetid://10709811261",
+   Logo = "rbxassetid://12650480175",
    Invite = "https://discord.gg/vr7"
 })
 
 -- Main Tab
 local mainTab = window:MakeTab({
    Name = "Main Features",
-   Icon = "rbxassetid://10709811261"
+   Icon = "rbxassetid://11347112419"
 })
 
 -- UI Size Section
@@ -195,7 +195,7 @@ mainTab:AddSlider({
 -- Player Tab
 local playerTab = window:MakeTab({
    Name = "Player",
-   Icon = "rbxassetid://10709811261"
+   Icon = "rbxassetid://18832783199"
 })
 
 -- Movement Section
@@ -743,7 +743,7 @@ playerTab:AddToggle({
 -- Teleport Tab
 local teleportTab = window:MakeTab({
    Name = "Teleport",
-   Icon = "rbxassetid://10709811261"
+   Icon = "rbxassetid://2249604078"
 })
 
 -- Player Teleport Section
