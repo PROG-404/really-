@@ -1,3 +1,14 @@
+-- import service 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+--Varibals 
+local player = Players.LocalPlayer
+
+-- import library redz 
+local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/RedzLib/main/Source.lua"))()
+
 -- Window Creation
 local window = redzlib:MakeWindow({
    Name = "Brookhaven Script",
@@ -839,3 +850,5 @@ end)
 Players.PlayerRemoving:Connect(function()
    updatePlayerDropdown()
 end)
+
+
