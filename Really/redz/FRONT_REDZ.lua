@@ -80,8 +80,8 @@ mainTab:AddSection({
 mainTab:AddButton({
    Name = " by front X Fly V2",
    Callback = function()
-       loadstring("https://raw.githubusercontent.com/PROG-404/front-script/refs/heads/main/Sourc.lua")()
-       notify("Flight", "Arceus X Fly V2 loaded", 2)
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/PROG-404/front-script/refs/heads/main/Sourc.lua"))()
+         notify("Flight", "Arceus X Fly V2 loaded", 2)
    end
 })
 
@@ -116,7 +116,7 @@ mainTab:AddToggle({
    Name = "Ghost Mode",
    Default = false,
    Callback = function(Value)
-       if not isAlive() then return end
+       if not isAlive() then break end
        local character = player.Character
        
        for _, part in pairs(character:GetDescendants()) do
@@ -190,12 +190,11 @@ mainTab:AddSlider({
        
        local character = player.Character
        if character:FindFirstChild("Humanoid") then
-           local bodyScale = character.Humanoid:FindFirstChild("BodyScale")
-           if not bodyScale then
-               bodyScale = Instance.new("BodyScale")
-               bodyScale.Parent = character.Humanoid
-           end
-           bodyScale.Value = Value
+           local humanoid = character.Humanoid
+                humanoid.BodyDepthScale.Value = Value
+                humanoid.BodyHeightScale.Value = Value
+                humanoid.BodyWidthScale.Value = Value
+                humanoid.HeadScale.Value = Value
            
            for _, part in pairs(character:GetDescendants()) do
                if part:IsA("BasePart") then
@@ -236,9 +235,9 @@ playerTab:AddSlider({
    Default = 50,
    Increment = 1,
    Callback = function(Value)
-       if not isAlive() then return end
-       player.Character.Humanoid.JumpPower = Value
-   end
+       if isAlive() then
+           player.Character.Humanoid.WalkSpeed = Value
+       end
 })
 
 playerTab:AddToggle({
@@ -246,7 +245,7 @@ playerTab:AddToggle({
    Default = false,
    Callback = function(Value)
        getgenv().InfiniteJump = Value
-       game:GetService("UserInputService").JumpRequest:connect(function()
+       game:GetService("UserInputService").JumpRequest:Connect(function()
            if getgenv().InfiniteJump then
                if isAlive() then
                    player.Character.Humanoid:ChangeState("Jumping")
@@ -804,7 +803,7 @@ teleportTab:AddButton({
                    -- Smooth teleport
                    local targetCFrame = targetPlayer.Character.HumanoidRootPart.CFrame
                    local success, error = pcall(function()
-                       player.Character:SetPrimaryPartCFrame(targetCFrame)
+                       player.Character.HumanoidRootPart.CFrame = targetCFrame
                    end)
                    
                    if success then
