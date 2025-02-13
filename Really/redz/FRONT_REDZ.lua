@@ -116,7 +116,7 @@ mainTab:AddToggle({
    Name = "Ghost Mode",
    Default = false,
    Callback = function(Value)
-       if not isAlive() then break end
+       if not isAlive() then return end
        local character = player.Character
        
        for _, part in pairs(character:GetDescendants()) do
@@ -135,7 +135,7 @@ mainTab:AddToggle({
    Default = false,
    Callback = function(Value)
        while Value and wait() do
-           if not isAlive() then continue() end
+           if not isAlive() then break end
            
            for _, otherPlayer in pairs(Players:GetPlayers()) do
                if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
@@ -191,16 +191,10 @@ mainTab:AddSlider({
        local character = player.Character
        if character:FindFirstChild("Humanoid") then
            local humanoid = character.Humanoid
-                humanoid.BodyDepthScale.Value = Value
-                humanoid.BodyHeightScale.Value = Value
-                humanoid.BodyWidthScale.Value = Value
-                humanoid.HeadScale.Value = Value
-           
-           for _, part in pairs(character:GetDescendants()) do
-               if part:IsA("BasePart") then
-                   part.Size = part.Size * Value
-               end
-           end
+           humanoid.BodyDepthScale.Value = Value
+           humanoid.BodyHeightScale.Value = Value
+           humanoid.BodyWidthScale.Value = Value
+           humanoid.HeadScale.Value = Value
        end
    end
 })
@@ -236,7 +230,7 @@ playerTab:AddSlider({
    Increment = 1,
    Callback = function(Value)
        if isAlive() then
-           player.Character.Humanoid.WalkSpeed = Value
+           player.Character.Humanoid.JumpPower = Value
        end
 })
 
