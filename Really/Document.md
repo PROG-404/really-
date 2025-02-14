@@ -18,7 +18,7 @@ local window = redzlib:MakeWindow({
 
 ```lua
 local tab = window:MakeTab({
-    Name = "name tab",
+    Title = "name tab",
     Icon = "rbxassetid://123456789" -- icons 
 })
 ```
