@@ -1,10 +1,13 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+-- إنشاء الواجهة
 local ScreenGui = Instance.new("ScreenGui")
 local ToggleFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
 local ToggleButton = Instance.new("TextButton")
-local Dots = {}
-local dotTargets = {}
 
--- تعيين الواجهة للاعب
+-- تعيين الواجهة
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ResetOnSpawn = false
 
@@ -13,24 +16,35 @@ ToggleFrame.Name = "ToggleFrame"
 ToggleFrame.Parent = ScreenGui
 ToggleFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ToggleFrame.BackgroundTransparency = 0
-ToggleFrame.Position = UDim2.new(0.5, -50, 0, 5)
-ToggleFrame.Size = UDim2.new(0, 100, 0, 30)
+ToggleFrame.Position = UDim2.new(0.5, -75, 0, 5)
+ToggleFrame.Size = UDim2.new(0, 150, 0, 40)
 
--- إضافة النقاط البيضاء
-for i = 1, 5 do
-   local dot = Instance.new("Frame")
-   dot.Name = "Dot"..i
-   dot.Parent = ToggleFrame
-   dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-   dot.Size = UDim2.new(0, 2, 0, 2)
-   dot.Position = UDim2.new(math.random(), 0, math.random(), 0)
-   table.insert(Dots, dot)
-   
-   -- تهيئة أهداف النقاط
-   dotTargets[i] = {
-       x = math.random(),
-       y = math.random()
-   }
+UICorner.CornerRadius = UDim.new(0.5, 0)
+UICorner.Parent = ToggleFrame
+
+-- إضافة النقاط الدائرية الثابتة
+local numDots = 8
+local radius = 15
+local centerX = 75
+local centerY = 20
+
+for i = 1, numDots do
+    local angle = (i - 1) * (2 * math.pi / numDots)
+    local x = centerX + radius * math.cos(angle)
+    local y = centerY + radius * math.sin(angle)
+    
+    local dot = Instance.new("Frame")
+    local dotCorner = Instance.new("UICorner")
+    
+    dot.Name = "Dot"..i
+    dot.Parent = ToggleFrame
+    dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    dot.BackgroundTransparency = 0.5
+    dot.Size = UDim2.new(0, 4, 0, 4)
+    dot.Position = UDim2.new(0, x, 0, y)
+    
+    dotCorner.CornerRadius = UDim.new(1, 0)
+    dotCorner.Parent = dot
 end
 
 -- تصميم الزر
@@ -38,109 +52,110 @@ ToggleButton.Name = "ToggleButton"
 ToggleButton.Parent = ToggleFrame
 ToggleButton.Size = UDim2.new(1, 0, 1, 0)
 ToggleButton.BackgroundTransparency = 1
-ToggleButton.Text = "FRONT"
-ToggleButton.TextSize = 16
+ToggleButton.Text = "Ace OFF"
+ToggleButton.TextSize = 18
 ToggleButton.Font = Enum.Font.GothamBold
 
 -- تأثير الألوان المتحركة
 local function updateColors()
-   while wait() do
-       for i = 0, 1, 0.005 do
-           ToggleButton.TextColor3 = Color3.fromHSV(i, 1, 1)
-           wait(0.05)
-       end
-   end
+    while wait() do
+        for i = 0, 1, 0.005 do
+            ToggleButton.TextColor3 = Color3.fromHSV(i, 1, 1)
+            wait(0.05)
+        end
+    end
 end
 coroutine.wrap(updateColors)()
 
--- وظائف حركة النقاط
-local function getNewTarget()
-   return {
-       x = math.random(),
-       y = math.random()
-   }
-end
+-- إعدادات Aimbot
+local Settings = {
+    Enabled = false,
+    TeamCheck = false,
+    TargetPart = "Head",
+    MaxDistance = 1000
+}
 
-local function moveDots()
-   while wait(0.016) do -- حوالي 60 FPS
-       for index, dot in ipairs(Dots) do
-           local currentX = dot.Position.X.Scale
-           local currentY = dot.Position.Y.Scale
-           local target = dotTargets[index]
-           
-           -- حساب المسافة للهدف
-           local distanceX = math.abs(currentX - target.x)
-           local distanceY = math.abs(currentY - target.y)
-           
-           -- إذا وصلت النقطة قريباً من هدفها، نحدد هدفاً جديداً
-           if distanceX < 0.01 and distanceY < 0.01 then
-               dotTargets[index] = getNewTarget()
-               target = dotTargets[index]
-           end
-           
-           -- حركة سلسة وبطيئة
-           local newX = currentX + (target.x - currentX) * 0.02
-           local newY = currentY + (target.y - currentY) * 0.02
-           
-           dot.Position = UDim2.new(newX, 0, newY, 0)
-       end
-   end
-end
-coroutine.wrap(moveDots)()
-
-
--- وظيفة لجعل الشخصية تنظر إلى اللاعب
-local function lookAtPlayer(targetPlayer)
-    local localPlayer = game.Players.LocalPlayer
+-- وظيفة العثور على أقرب لاعب
+local function getClosestPlayer()
+    local localPlayer = Players.LocalPlayer
     local character = localPlayer.Character
     if not character then return end
+    
     local rootPart = character:FindFirstChild("HumanoidRootPart")
     if not rootPart then return end
     
-    local targetCharacter = targetPlayer.Character
-    if not targetCharacter then return end
-    local targetRootPart = targetCharacter:FindFirstChild("HumanoidRootPart")
-    if not targetRootPart then return end
+    local closestPlayer = nil
+    local shortestDistance = Settings.MaxDistance
     
-    -- حساب الاتجاه للاعب المستهدف
-    local direction = (targetRootPart.Position - rootPart.Position).Unit
-    local lookAt = CFrame.new(rootPart.Position, targetRootPart.Position)
-    
-    -- تغيير اتجاه الشخصية
-    rootPart.CFrame = CFrame.new(rootPart.Position, Vector3.new(
-        targetRootPart.Position.X,
-        rootPart.Position.Y,
-        targetRootPart.Position.Z
-    ))
-end
-
--- تعديل وظيفة التبديل
-local toggled = false
-local currentTarget = nil -- لتخزين اللاعب الحالي
-
-ToggleButton.MouseButton1Click:Connect(function()
-    toggled = not toggled
-    if toggled then
-        ToggleButton.Text = "Ace ON"
-        -- بدء البحث والنظر إلى أقرب لاعب
-        spawn(function()
-            while toggled do
-                local nearestPlayer = findNearestPlayer()
-                if nearestPlayer then
-                    -- تحديث الهدف فقط إذا كان هناك لاعب جديد أقرب
-                    if nearestPlayer ~= currentTarget then
-                        currentTarget = nearestPlayer
-                    end
-                    -- النظر إلى اللاعب المستهدف
-                    if currentTarget then
-                        lookAtPlayer(currentTarget)
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer then
+            if not Settings.TeamCheck or player.Team ~= localPlayer.Team then
+                local playerCharacter = player.Character
+                if playerCharacter then
+                    local targetPart = playerCharacter:FindFirstChild(Settings.TargetPart)
+                    if targetPart then
+                        local distance = (rootPart.Position - targetPart.Position).Magnitude
+                        if distance < shortestDistance then
+                            closestPlayer = player
+                            shortestDistance = distance
+                        end
                     end
                 end
-                wait(1) -- انتظار ثانية قبل البحث مرة أخرى
             end
-        end)
-    else
-        ToggleButton.Text = "Ace OFF"
-        currentTarget = nil -- إعادة تعيين الهدف عند الإيقاف
+        end
+    end
+    
+    return closestPlayer
+end
+
+-- وظيفة Aimbot
+local function aimbot()
+    local localPlayer = Players.LocalPlayer
+    local character = localPlayer.Character
+    if not character then return end
+    
+    local humanoid = character:FindFirstChild("Humanoid")
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoid or not rootPart then return end
+    
+    local targetPlayer = getClosestPlayer()
+    if targetPlayer and targetPlayer.Character then
+        local targetPart = targetPlayer.Character:FindFirstChild(Settings.TargetPart)
+        if targetPart then
+            humanoid.AutoRotate = false
+            
+            local targetPos = targetPart.Position
+            local characterPos = rootPart.Position
+            
+            rootPart.CFrame = CFrame.new(characterPos, Vector3.new(
+                targetPos.X,
+                characterPos.Y,
+                targetPos.Z
+            ))
+        end
+    end
+end
+
+-- تفعيل/تعطيل Aimbot
+ToggleButton.MouseButton1Click:Connect(function()
+    Settings.Enabled = not Settings.Enabled
+    ToggleButton.Text = Settings.Enabled and "Ace ON" or "Ace OFF"
+    
+    -- إعادة تفعيل AutoRotate عند إيقاف Aimbot
+    if not Settings.Enabled then
+        local character = game.Players.LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.AutoRotate = true
+            end
+        end
+    end
+end)
+
+-- تشغيل Aimbot
+RunService.RenderStepped:Connect(function()
+    if Settings.Enabled then
+        aimbot()
     end
 end)
