@@ -153,6 +153,60 @@ ToggleButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- إعدادات مفاتيح الهجوم
+local AttackKeys = {
+    "Z", "X", "C", "V", "F"
+}
+
+-- وظيفة التصويب المحسنة
+local function aimbot()
+    local localPlayer = Players.LocalPlayer
+    local character = localPlayer.Character
+    if not character then return end
+    
+    local humanoid = character:FindFirstChild("Humanoid")
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoid or not rootPart then return end
+    
+    local targetPlayer = getClosestPlayer()
+    if targetPlayer and targetPlayer.Character then
+        local targetPart = targetPlayer.Character:FindFirstChild(Settings.TargetPart)
+        if targetPart then
+            -- توجيه الشخصية
+            humanoid.AutoRotate = false
+            
+            local targetPos = targetPart.Position
+            local characterPos = rootPart.Position
+            
+            -- تحديث CFrame للتوجيه نحو الهدف
+            rootPart.CFrame = CFrame.new(characterPos, Vector3.new(
+                targetPos.X,
+                characterPos.Y,
+                targetPos.Z
+            ))
+            
+            -- التحقق من مفاتيح الهجوم
+            for _, key in ipairs(AttackKeys) do
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode[key]) then
+                    -- توجيه الهجوم نحو الهدف
+                    local args = {
+                        [1] = targetPos
+                    }
+                    
+                    -- محاولة تنفيذ الهجوم
+                    local tool = character:FindFirstChildOfClass("Tool")
+                    if tool then
+                        if tool:FindFirstChild("RemoteEvent") then
+                            tool.RemoteEvent:FireServer(unpack(args))
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+
 -- تشغيل Aimbot
 RunService.RenderStepped:Connect(function()
     if Settings.Enabled then
