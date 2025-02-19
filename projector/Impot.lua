@@ -67,149 +67,153 @@ local function updateColors()
 end
 coroutine.wrap(updateColors)()
 
--- إعدادات Aimbot
-local Settings = {
-    Enabled = false,
-    TeamCheck = false,
-    TargetPart = "Head",
-    MaxDistance = 1000
-}
 
--- وظيفة العثور على أقرب لاعب
-local function getClosestPlayer()
-    local localPlayer = Players.LocalPlayer
-    local character = localPlayer.Character
-    if not character then return end
+Module.Hooking = (function()
+    if _ENV.rz_AimBot then
+        return _ENV.rz_AimBot
+    end
     
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    if not rootPart then return end
+    local module = {}
+    _ENV.rz_AimBot = module
     
-    local closestPlayer = nil
-    local shortestDistance = Settings.MaxDistance
+    local Enabled = _ENV.rz_EnabledOptions;
+    local IsAlive = Module.IsAlive;
     
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= localPlayer then
-            if not Settings.TeamCheck or player.Team ~= localPlayer.Team then
-                local playerCharacter = player.Character
-                if playerCharacter then
-                    local targetPart = playerCharacter:FindFirstChild(Settings.TargetPart)
-                    if targetPart then
-                        local distance = (rootPart.Position - targetPart.Position).Magnitude
-                        if distance < shortestDistance then
-                            closestPlayer = player
-                            shortestDistance = distance
-                        end
-                    end
-                end
-            end
+    local NextEnemy = nil;
+    local NextTarget = nil;
+    local UpdateDebounce = 0;
+    local TargetDebounce = 0;
+    
+    local GetPlayers = Players.GetPlayers
+    local GetChildren = Enemies.GetChildren
+    local Skills = ToDictionary({"Z", "X", "C", "V", "F"})
+    
+    local function CanAttack(player)
+        return player.Team and (player.Team.Name == "Pirates" or player.Team ~= Player.Team)
+    end
+    
+    local function GetNextTarget(Mode)
+        if (tick() - TargetDebounce) < 2.5 then
+            return NextEnemy
+        end
+        
+        if (Mode and _ENV[Mode]) then
+            return NextTarget
         end
     end
     
-    return closestPlayer
-end
-
--- وظيفة Aimbot
-local function aimbot()
-    local localPlayer = Players.LocalPlayer
-    local character = localPlayer.Character
-    if not character then return end
-    
-    local humanoid = character:FindFirstChild("Humanoid")
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    if not humanoid or not rootPart then return end
-    
-    local targetPlayer = getClosestPlayer()
-    if targetPlayer and targetPlayer.Character then
-        local targetPart = targetPlayer.Character:FindFirstChild(Settings.TargetPart)
-        if targetPart then
-            humanoid.AutoRotate = false
-            
-            local targetPos = targetPart.Position
-            local characterPos = rootPart.Position
-            
-            rootPart.CFrame = CFrame.new(characterPos, Vector3.new(
-                targetPos.X,
-                characterPos.Y,
-                targetPos.Z
-            ))
+    local function UpdateTarget()
+        if (tick() - UpdateDebounce) < 0.5 then
+            return nil
         end
-    end
-end
-
--- تفعيل/تعطيل Aimbot
-ToggleButton.MouseButton1Click:Connect(function()
-    Settings.Enabled = not Settings.Enabled
-    ToggleButton.Text = Settings.Enabled and "Ace ON" or "Ace OFF"
-    
-    -- إعادة تفعيل AutoRotate عند إيقاف Aimbot
-    if not Settings.Enabled then
-        local character = game.Players.LocalPlayer.Character
-        if character then
-            local humanoid = character:FindFirstChild("Humanoid")
-            if humanoid then
-                humanoid.AutoRotate = true
-            end
+        
+        local PrimaryPart = Player.Character and Player.Character.PrimaryPart
+        
+        if not PrimaryPart then
+            return nil
         end
-    end
-end)
-
--- إعدادات مفاتيح الهجوم
-local AttackKeys = {
-    "Z", "X", "C", "V", "F"
-}
-
--- وظيفة التصويب المحسنة
-local function aimbot()
-    local localPlayer = Players.LocalPlayer
-    local character = localPlayer.Character
-    if not character then return end
-    
-    local humanoid = character:FindFirstChild("Humanoid")
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    if not humanoid or not rootPart then return end
-    
-    local targetPlayer = getClosestPlayer()
-    if targetPlayer and targetPlayer.Character then
-        local targetPart = targetPlayer.Character:FindFirstChild(Settings.TargetPart)
-        if targetPart then
-            -- توجيه الشخصية
-            humanoid.AutoRotate = false
-            
-            local targetPos = targetPart.Position
-            local characterPos = rootPart.Position
-            
-            -- تحديث CFrame للتوجيه نحو الهدف
-            rootPart.CFrame = CFrame.new(characterPos, Vector3.new(
-                targetPos.X,
-                characterPos.Y,
-                targetPos.Z
-            ))
-            
-            -- التحقق من مفاتيح الهجوم
-            for _, key in ipairs(AttackKeys) do
-                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode[key]) then
-                    -- توجيه الهجوم نحو الهدف
-                    local args = {
-                        [1] = targetPos
-                    }
+        
+        local Position = PrimaryPart.Position
+        local Players = Players:GetPlayers()
+        local Enemies = Enemies:GetChildren()
+        
+        local Distance, Nearest = 750
+        
+        if #Players > 1 then
+            for _, player in ipairs(Players) do
+                if player ~= Player and CanAttack(player) and IsAlive(player.Character) then
+                    local UpperTorso = player.Character:FindFirstChild("UpperTorso")
+                    local Magnitude = UpperTorso and (UpperTorso.Position - Position).Magnitude
                     
-                    -- محاولة تنفيذ الهجوم
-                    local tool = character:FindFirstChildOfClass("Tool")
-                    if tool then
-                        if tool:FindFirstChild("RemoteEvent") then
-                            tool.RemoteEvent:FireServer(unpack(args))
-                        end
+                    if UpperTorso and Magnitude < Distance then
+                        Distance, Nearest = Magnitude, UpperTorso
                     end
                 end
             end
         end
+        if #Enemies > 0 and not Settings.NoAimMobs then
+            for _, Enemy in ipairs(Enemies) do
+                local UpperTorso = Enemy:FindFirstChild("UpperTorso")
+                if UpperTorso and IsAlive(Enemy) then
+                    local Magnitude = (UpperTorso.Position - Position).Magnitude
+                    if Magnitude < Distance then
+                        Distance, Nearest = Magnitude, UpperTorso
+                    end
+                end
+            end
+        end
+        
+        NextTarget, UpdateDebounce = Nearest, tick()
     end
-end
-
-
--- تشغيل Aimbot
-RunService.RenderStepped:Connect(function()
-    if Settings.Enabled then
-        aimbot()
+    
+    function module:SpeedBypass()
+        if _ENV._Enabled_Speed_Bypass then
+            return nil
+        end
+        
+        _ENV._Enabled_Speed_Bypass = true
+        
+        local oldHook;
+        oldHook = hookmetamethod(Player, "__newindex", function(self, index, value)
+            if self.Name == "Humanoid" and index == "WalkSpeed" then
+                return oldHook(self, index, _ENV.WalkSpeedBypass or value)
+            end
+            return oldHook(self, index, value)
+        end)
     end
-end)
+    
+    function module:SetTarget(Part)
+        TargetDebounce, NextEnemy = tick(), Part.Parent:FindFirstChild("UpperTorso") or Part
+    end
+    
+    Stepped:Connect(UpdateTarget)
+    
+    local old_namecall; old_namecall = _ENV.original_namecall or hookmetamethod(game, "__namecall", function(self, ...)
+        local Method = string.lower(getnamecallmethod())
+        
+        if Method ~= "fireserver" then
+            return old_namecall(self, ...)
+        end
+        
+        local Name = self.Name
+        
+        if Name == "RE/ShootGunEvent" then
+            local Position, Enemies = ...
+            
+            if typeof(Position) == "Vector3" and type(Enemies) == "table" then
+                local Target = GetNextTarget("AimBot_Gun")
+                
+                if Target then
+                    if Target.Name == "UpperTorso" then
+                        table.insert(Enemies, Target)
+                    end
+                    
+                    Position = Target.Position
+                end
+                
+                return old_namecall(self, Position, Enemies)
+            end
+        elseif Name == "RemoteEvent" and self.Parent.ClassName == "Tool" then
+            local v1, v2 = ...
+            
+            if typeof(v1) == "Vector3" and not v2 then
+                local Target = GetNextTarget("AimBot_Skills")
+                
+                if Target then
+                    return old_namecall(self, Target.Position)
+                end
+            elseif v1 == "TAP" and typeof(v2) == "Vector3" then
+                local Target = GetNextTarget("AimBot_Tap")
+                
+                if Target then
+                    return old_namecall(self, "TAP", Target.Position)
+                end
+            end
+        end
+        
+        return old_namecall(self, ...)
+    end)
+    
+    _ENV.original_namecall = old_namecall
+    return module
+end)()
