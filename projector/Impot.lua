@@ -12,8 +12,9 @@ Module.IsAlive = function(character)
     return humanoid and humanoid.Health > 0
 end
 
--- تعريف Enemies (مفقود في الكود الأصلي)
+-- تعريف Enemies 
 local Enemies = workspace:WaitForChild("Enemies", 10) or Instance.new("Folder")
+local Characters = workspace:WaitForChild("Characters", 10) or Instance.new("Folder")
 
 -- تعريف دالة ToDictionary
 local function ToDictionary(array)
@@ -21,6 +22,7 @@ local function ToDictionary(array)
     for _, v in ipairs(array) do
         dict[v] = true
     end
+    table.clear(array)
     return dict
 end
 
@@ -88,16 +90,17 @@ local function updateColors()
         end
     end
 end
-coroutine.wrap(updateColors)() -- تم تصحيح: استدعاء الدالة بشكل صحيح
+coroutine.wrap(updateColors)() -- استدعاء الدالة بشكل صحيح
 
 -- تعريف الإعدادات
-_ENV = _ENV or {}
+_ENV = _ENV or getgenv() or {}
 _ENV.rz_EnabledOptions = _ENV.rz_EnabledOptions or {}
 local Settings = {
-    NoAimMobs = false -- تعريف الإعداد المفقود
+    NoAimMobs = false, -- تعريف الإعداد
+    BringDistance = 350 -- إضافة إعداد مفقود
 }
 
--- تعريف وظيفة Hooking
+-- === كود AimBot المستخرج من Module.lua ===
 Module.Hooking = (function()
     if _ENV.rz_AimBot then
         return _ENV.rz_AimBot
@@ -113,6 +116,10 @@ Module.Hooking = (function()
     local NextTarget = nil
     local UpdateDebounce = 0
     local TargetDebounce = 0
+    
+    local GetPlayers = Players.GetPlayers
+    local GetChildren = Enemies.GetChildren
+    local Skills = ToDictionary({"Z", "X", "C", "V", "F"})
     
     local function CanAttack(player)
         return player.Team and (player.Team.Name == "Pirates" or player.Team ~= Player.Team)
@@ -140,13 +147,13 @@ Module.Hooking = (function()
         end
         
         local Position = PrimaryPart.Position
-        local GamePlayers = Players:GetPlayers()
-        local EnemyNPCs = Enemies:GetChildren()
+        local PlayersArray = GetPlayers(Players)
+        local EnemiesArray = GetChildren(Enemies)
         
         local Distance, Nearest = 750, nil
         
-        if #GamePlayers > 1 then
-            for _, player in ipairs(GamePlayers) do
+        if #PlayersArray > 1 then
+            for _, player in ipairs(PlayersArray) do
                 if player ~= Player and CanAttack(player) and IsAlive(player.Character) then
                     local UpperTorso = player.Character:FindFirstChild("UpperTorso")
                     local Magnitude = UpperTorso and (UpperTorso.Position - Position).Magnitude
@@ -157,8 +164,9 @@ Module.Hooking = (function()
                 end
             end
         end
-        if #EnemyNPCs > 0 and not Settings.NoAimMobs then
-            for _, Enemy in ipairs(EnemyNPCs) do
+        
+        if #EnemiesArray > 0 and not Settings.NoAimMobs then
+            for _, Enemy in ipairs(EnemiesArray) do
                 local UpperTorso = Enemy:FindFirstChild("UpperTorso")
                 if UpperTorso and IsAlive(Enemy) then
                     local Magnitude = (UpperTorso.Position - Position).Magnitude
@@ -179,7 +187,7 @@ Module.Hooking = (function()
         
         _ENV._Enabled_Speed_Bypass = true
         
-        local oldHook;
+        local oldHook
         oldHook = hookmetamethod(Player, "__newindex", function(self, index, value)
             if self.Name == "Humanoid" and index == "WalkSpeed" then
                 return oldHook(self, index, _ENV.WalkSpeedBypass or value)
@@ -243,3 +251,18 @@ Module.Hooking = (function()
     _ENV.original_namecall = old_namecall
     return module
 end)()
+
+-- إضافة المفاتيح لتفعيل/تعطيل وظائف AimBot
+local function toggleAimBotFeature(featureName)
+    _ENV[featureName] = not _ENV[featureName]
+    return _ENV[featureName]
+end
+
+-- إضافة وظيفة تبديل حالة زر الواجهة
+ToggleButton.MouseButton1Click:Connect(function()
+    local isActive = toggleAimBotFeature("AimBot_Gun") 
+    toggleAimBotFeature("AimBot_Skills")
+    toggleAimBotFeature("AimBot_Tap")
+    
+    ToggleButton.Text = isActive and "Ace ON" or "Ace OFF"
+end)
